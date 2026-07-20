@@ -1,0 +1,15 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/d3-doma-openapi.json
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: Api-Key
+  type: apiKey
+  in: header
+  parameter: Api-Key
+  sources:
+  - openapi/d3-doma-openapi.json
