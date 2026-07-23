@@ -1,0 +1,759 @@
+openapi: 3.0.0
+info:
+  title: Doma Protocol Events Poll API Orderbook API API
+  version: '1.0'
+  description: Doma Protocol API (Poll API + Orderbook API) for D3's on-chain domain tokenization protocol. Aggregated by API Evangelist from the per-operation OpenAPI fragments published in the Doma docs (docs.doma.xyz). Authenticate with an Api-Key header; rate limited to 10 req/s.
+servers:
+- url: https://api.doma.xyz
+  description: Mainnet
+- url: https://api-testnet.doma.xyz
+  description: Testnet
+security:
+- Api-Key: []
+tags:
+- name: Orderbook API
+paths:
+  /v1/orderbook/list:
+    post:
+      description: Create a fixed priced listing on a supported orderbook (OpenSea, Doma).
+      operationId: OrderbookApiController_createListing
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequestBody'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrderResponse'
+        '400':
+          description: Bad Request. Invalid query parameters.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Create Listing
+      tags:
+      - Orderbook API
+  /v1/orderbook/offer:
+    post:
+      description: Create an offer on a supported orderbook (OpenSea, Doma).
+      operationId: OrderbookApiController_createOffer
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequestBody'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrderResponse'
+        '400':
+          description: Bad Request. Invalid query parameters.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Create Offer
+      tags:
+      - Orderbook API
+  /v1/orderbook/fee/{orderbook}/{chainId}/{contractAddress}:
+    get:
+      description: Get marketplace fees for a specific orderbook and chain.
+      operationId: OrderbookApiController_getOrderbookFee
+      parameters:
+      - name: orderbook
+        required: true
+        in: path
+        description: The orderbook type
+        schema:
+          type: string
+      - name: chainId
+        required: true
+        in: path
+        description: The chain ID in CAIP-2 format
+        schema:
+          type: string
+      - name: contractAddress
+        required: true
+        in: path
+        description: The contract address of the token being listed or offered.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderbookFeeResponse'
+        '400':
+          description: Bad Request. Invalid path parameters.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Get orderbook fees
+      tags:
+      - Orderbook API
+  /v1/orderbook/listing/{orderId}/{buyer}:
+    get:
+      description: Get listing fulfillment data by order id and buyer address.
+      operationId: OrderbookApiController_getListingById
+      parameters:
+      - name: orderId
+        required: true
+        in: path
+        description: The Order ID of the listing.
+        schema:
+          type: string
+      - name: buyer
+        required: true
+        in: path
+        description: Buyer address, in native chain format.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderByIdResponse'
+        '400':
+          description: Bad Request. Invalid query parameters.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Get Listing fulfillment data
+      tags:
+      - Orderbook API
+  /v1/orderbook/offer/{orderId}/{fulfiller}:
+    get:
+      description: Get offer fulfillment data by order id and fulfiller (token owner) address.
+      operationId: OrderbookApiController_getOfferById
+      parameters:
+      - name: orderId
+        required: true
+        in: path
+        description: The Order ID of the offer.
+        schema:
+          type: string
+      - name: fulfiller
+        required: true
+        in: path
+        description: Fulfiller address, in native chain format. This is the address that owns the name token.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderByIdResponse'
+        '400':
+          description: Bad Request. Invalid query parameters.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Get Offer fulfillment data
+      tags:
+      - Orderbook API
+  /v1/orderbook/listing/cancel:
+    post:
+      description: Cancel a listing on a supported orderbook (OpenSea, Doma).
+      operationId: OrderbookApiController_cancelListing
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelOrderRequestBody'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelOrderResponse'
+        '400':
+          description: Bad Request. Invalid signature or order not found.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Cancel Listing
+      tags:
+      - Orderbook API
+  /v1/orderbook/offer/cancel:
+    post:
+      description: Cancel an offer on a supported orderbook (OpenSea, Doma).
+      operationId: OrderbookApiController_cancelOffer
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelOrderRequestBody'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelOrderResponse'
+        '400':
+          description: Bad Request. Invalid signature or order not found.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Cancel Offer
+      tags:
+      - Orderbook API
+  /v1/orderbook/currencies/{chainId}/{contractAddress}/{orderbook}:
+    get:
+      description: Get all supported currency tokens for orderbook operations on a specific chain.
+      operationId: OrderbookApiController_getSupportedCurrencies
+      parameters:
+      - name: chainId
+        required: true
+        in: path
+        description: The chain ID in CAIP-2 format
+        schema:
+          type: string
+      - name: contractAddress
+        required: true
+        in: path
+        description: The contract address of the token.
+        schema:
+          type: string
+      - name: orderbook
+        required: true
+        in: path
+        description: The name of the orderbook.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrenciesResponse'
+        '400':
+          description: Bad Request. Invalid chain ID format.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Get supported currencies
+      tags:
+      - Orderbook API
+  /v1/orderbook/list/bulk:
+    post:
+      description: Create multiple fixed priced listings on a supported orderbook (Doma and OpenSea).
+      operationId: OrderbookApiController_createBulkListing
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBulkOrderRequestBody'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBulkOrderResponse'
+        '400':
+          description: Bad Request. Invalid query parameters.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Create Bulk Listings
+      tags:
+      - Orderbook API
+  /v1/orderbook/offer/bulk:
+    post:
+      description: Create multiple fixed priced offers on a supported orderbook (Doma and OpenSea).
+      operationId: OrderbookApiController_createBulkOffer
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBulkOrderRequestBody'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBulkOrderResponse'
+        '400':
+          description: Bad Request. Invalid query parameters.
+        '401':
+          description: Unauthorized. API Key is missing or invalid.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Create Bulk Offers
+      tags:
+      - Orderbook API
+  /v1/orderbook/list/bulk/{id}/items:
+    get:
+      description: Get paginated items for a bulk listing by bulk listing ID.
+      operationId: OrderbookApiController_getBulkListingItems
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Bulk listing ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Bulk listing items retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBulkListingResponse'
+        '400':
+          description: Bad Request. Bulk listing not found or invalid parameters.
+        '403':
+          description: Forbidden. API Key is missing 'ORDERBOOK' permission.
+      summary: Get bulk listing items
+      tags:
+      - Orderbook API
+components:
+  schemas:
+    OfferItem:
+      type: object
+      properties:
+        itemType:
+          type: number
+          description: The type of item being offered.
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        token:
+          type: string
+          description: Token address of the item being offered.
+        identifierOrCriteria:
+          type: string
+          description: Identifier or criteria for the item.
+        startAmount:
+          type: string
+          description: Starting amount for the item.
+        endAmount:
+          type: string
+          description: Ending amount for the item.
+      required:
+      - itemType
+      - token
+      - identifierOrCriteria
+      - startAmount
+      - endAmount
+    CreateBulkOrderRequestBody:
+      type: object
+      properties:
+        orderbook:
+          type: string
+          description: Orderbook identifier. Only DOMA is supported.
+          enum:
+          - DOMA
+          - OPENSEA
+        chainId:
+          type: string
+          description: Chain ID in CAIP-2 format.
+          pattern: ^[a-z0-9]+:[a-zA-Z0-9]+$
+        orders:
+          description: Array of orders to create. Maximum 50 orders allowed.
+          maxItems: 50
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkListingOrder'
+        cancelExisting:
+          type: boolean
+          description: Cancel existing orders if they exist.
+        cancelSignatures:
+          type: object
+          description: Map of order IDs to cancellation signatures. Required for OpenSea orderbook when canceling existing orders.
+          additionalProperties:
+            type: string
+      required:
+      - orderbook
+      - chainId
+      - orders
+      - cancelExisting
+    BulkListingOrder:
+      type: object
+      properties:
+        parameters:
+          description: Order parameters.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
+        signature:
+          type: string
+          description: Order signature.
+      required:
+      - parameters
+      - signature
+    CancelOrderRequestBody:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The Order ID to cancel.
+        signature:
+          type: string
+          description: EIP-712 signature for cancel authorization.
+      required:
+      - orderId
+      - signature
+    CurrenciesResponse:
+      type: object
+      properties:
+        currencies:
+          description: List of supported currency tokens for orderbook operations.
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyTokenResponse'
+      required:
+      - currencies
+    CancelOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The cancelled order ID.
+      required:
+      - orderId
+    GetOrderByIdResponse:
+      type: object
+      properties:
+        order:
+          description: Order containing parameters and signature.
+          allOf:
+          - $ref: '#/components/schemas/OrderResponse'
+        extraData:
+          type: object
+          description: Extra data for seaport fulfilment.
+      required:
+      - order
+    CreateOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The unique identifier for the created order.
+        orderData:
+          description: Order data.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
+        signature:
+          type: string
+          description: Order signature.
+      required:
+      - orderId
+      - orderData
+      - signature
+    ConsiderationItem:
+      type: object
+      properties:
+        itemType:
+          type: number
+          description: The type of item being offered.
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        token:
+          type: string
+          description: Token address of the item being offered.
+        identifierOrCriteria:
+          type: string
+          description: Identifier or criteria for the item.
+        startAmount:
+          type: string
+          description: Starting amount for the item.
+        endAmount:
+          type: string
+          description: Ending amount for the item.
+        recipient:
+          type: string
+          description: Recipient address to receive the consideration item.
+      required:
+      - itemType
+      - token
+      - identifierOrCriteria
+      - startAmount
+      - endAmount
+      - recipient
+    GetOrderbookFeeResponse:
+      type: object
+      properties:
+        marketplaceFees:
+          description: Array of marketplace fees.
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderbookFee'
+      required:
+      - marketplaceFees
+    CreateOrderRequestBody:
+      type: object
+      properties:
+        orderbook:
+          type: string
+          description: Orderbook identifier.
+        chainId:
+          type: string
+          description: Chain ID in CAIP-2 format.
+          pattern: ^[a-z0-9]+:[a-zA-Z0-9]+$
+        parameters:
+          description: Order parameters.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
+        signature:
+          type: string
+          description: Order signature.
+        cancelExisting:
+          type: boolean
+          description: Cancel existing order if it exists.
+        cancelSignatures:
+          type: object
+          description: Map of order IDs to cancellation signatures. Required for OpenSea orderbook when canceling existing orders.
+          additionalProperties:
+            type: string
+      required:
+      - orderbook
+      - chainId
+      - parameters
+      - signature
+      - cancelExisting
+    CreateBulkOrderResponse:
+      type: object
+      properties:
+        orders:
+          description: Array of created listing responses.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateOrderResponse'
+        errors:
+          description: Array of error messages.
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkOrderError'
+      required:
+      - orders
+      - errors
+    PaginatedBulkListingResponse:
+      type: object
+      properties:
+        items:
+          description: Response items
+          type: array
+          items:
+            type: string
+        totalCount:
+          type: number
+          description: Total number of items
+        pageSize:
+          type: number
+          description: Number of items per page
+        currentPage:
+          type: number
+          description: Current page
+        totalPages:
+          type: number
+          description: Total of pages
+        hasPreviousPage:
+          type: boolean
+          description: Has previous page
+        hasNextPage:
+          type: boolean
+          description: Has next page
+      required:
+      - items
+      - totalCount
+      - pageSize
+      - currentPage
+      - totalPages
+      - hasPreviousPage
+      - hasNextPage
+    OrderResponse:
+      type: object
+      properties:
+        parameters:
+          description: Order parameters.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
+        signature:
+          type: string
+          description: Order signature.
+      required:
+      - parameters
+      - signature
+    CurrencyTokenResponse:
+      type: object
+      properties:
+        contractAddress:
+          type: object
+          description: Token contract address.
+        name:
+          type: string
+          description: Token name.
+        symbol:
+          type: string
+          description: Currency symbol.
+        decimals:
+          type: number
+          description: Number of decimal places for the token.
+        type:
+          type: string
+          description: Indicates what operations this currency supports.
+          enum:
+          - LISTING_ONLY
+          - OFFER_ONLY
+          - ALL
+        nativeWrapper:
+          type: boolean
+          description: Indicates if this currency is a wrapper token (e.g., WETH).
+        usdExchangeRate:
+          type: number
+          description: USD exchange rate for the currency.
+      required:
+      - name
+      - symbol
+      - decimals
+      - type
+      - nativeWrapper
+      - usdExchangeRate
+    OrderbookFee:
+      type: object
+      properties:
+        recipient:
+          type: string
+          description: Fee recipient address.
+        basisPoints:
+          type: number
+          description: Fee amount in basis points (e.g., 250 = 2.5%).
+        feeType:
+          type: string
+          description: Fee type.
+          enum:
+          - DOMA
+          - OPENSEA
+          - ROYALTY
+      required:
+      - recipient
+      - basisPoints
+      - feeType
+    OrderComponents:
+      type: object
+      properties:
+        offerer:
+          type: string
+          description: Address of the offerer.
+        zone:
+          type: string
+          description: Zone address.
+        orderType:
+          type: number
+          description: Type of order.
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        startTime:
+          type: string
+          description: Start time of the order (Unix timestamp as string).
+        endTime:
+          type: string
+          description: End time of the order (Unix timestamp as string).
+        zoneHash:
+          type: string
+          description: Zone hash.
+        salt:
+          type: string
+          description: Salt for the order.
+        offer:
+          description: Array of offer items.
+          type: array
+          items:
+            $ref: '#/components/schemas/OfferItem'
+        consideration:
+          description: 'Array of consideration items. Considerations must include following fee items: Doma Marketplace fee, Name Token Royalties, OpenSea Fees (only for OpenSea Orderbook).'
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsiderationItem'
+        totalOriginalConsiderationItems:
+          type: number
+          description: Total number of original consideration items.
+        conduitKey:
+          type: string
+          description: Conduit key.
+        counter:
+          type: string
+          description: Counter for the order (as string).
+      required:
+      - offerer
+      - zone
+      - orderType
+      - startTime
+      - endTime
+      - zoneHash
+      - salt
+      - offer
+      - consideration
+      - totalOriginalConsiderationItems
+      - conduitKey
+      - counter
+    BulkOrderError:
+      type: object
+      properties:
+        tokenId:
+          type: string
+          description: Token ID of name that failed
+        contract:
+          type: string
+          description: Contract address of name that failed
+        error:
+          type: string
+          description: Error message
+      required:
+      - tokenId
+      - contract
+      - error
+  securitySchemes:
+    Api-Key:
+      type: apiKey
+      in: header
+      name: Api-Key
