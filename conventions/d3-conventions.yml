@@ -1,0 +1,58 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
+api: openapi/d3-doma-openapi.json
+authentication:
+  style: api-key
+  header: Api-Key
+  docs: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
+  notes: >-
+    Key-based authentication; keys are per-network (a testnet key won't work on
+    mainnet). Obtain keys at app.doma.xyz/account/developers (mainnet) or
+    app-testnet.doma.xyz/account/developers (testnet).
+idempotency:
+  supported: true
+  mechanism: event-unique-id
+  field: uniqueId
+  scope: poll-events
+  docs: https://docs.doma.xyz/api-reference/poll-api
+  notes: >-
+    Each Poll API event carries a globally unique `uniqueId` field, generated from
+    public on-chain data, that can be used as an idempotency key when processing
+    events to track the same event across different systems and avoid duplicates.
+    The Poll -> Acknowledge cursor model (poll, process, ack lastId) additionally
+    makes event consumption exactly-once at the consumer.
+pagination:
+  poll_api:
+    style: cursor
+    params: [limit, eventTypes]
+    ack_model: poll -> ack(lastEventId) -> next batch
+    response_fields: [events, lastId, hasMoreEvents]
+  subgraph_api:
+    style: offset
+    params: [take, skip]
+    response_fields: [items, totalCount, pageSize, currentPage, hasNextPage]
+rate_limiting:
+  limit: 10 req/s
+  scope: per-api-key
+  upgrade_contact: https://d3inc.atlassian.net/servicedesk/customer/portal/3
+  docs: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
+versioning:
+  scheme: uri-path
+  current: v1
+  notes: REST endpoints are namespaced under /v1 (e.g. /v1/poll, /v1/orderbook/list).
+error_envelope:
+  format: plain
+  statuses: [400, 401, 403]
+  notes: >-
+    REST responses use standard HTTP status codes (400 Bad Request, 401
+    Unauthorized, 403 Forbidden). No RFC 9457 problem+json envelope is declared.
+networks:
+  identifier: caip-2
+  mainnet: {chain_id: 97477, caip2: 'eip155:97477', graphql: https://api.doma.xyz/graphql, rest: https://api.doma.xyz, rpc: https://rpc.doma.xyz}
+  testnet: {chain_id: 97476, caip2: 'eip155:97476', graphql: https://api-testnet.doma.xyz/graphql, rest: https://api-testnet.doma.xyz, rpc: https://rpc-testnet.doma.xyz}
+cross_links:
+  authentication: authentication/d3-authentication.yml
+  errors: errors/d3-problem-types.yml
+  lifecycle: lifecycle/d3-lifecycle.yml
+  rate_limits: rate-limits/d3-rate-limits.yml

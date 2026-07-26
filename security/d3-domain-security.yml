@@ -1,0 +1,33 @@
+generated: '2026-07-18'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: d3.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 25 06:41:24 2026 GMT
+  hsts: false
+- host: docs.doma.xyz
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep  7 01:23:51 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.doma.xyz
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  6 19:06:07 2026 GMT
+  hsts: null
+domains:
+- domain: d3.com
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
+- domain: doma.xyz
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

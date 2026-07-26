@@ -1,0 +1,53 @@
+generated: '2026-07-18'
+method: derived
+status: candidate
+source: openapi/d3-doma-openapi.json
+notes: Candidate MCP tool list derived one-per-operation from the Doma Poll + Orderbook OpenAPI. No official
+  hosted Doma MCP server was found; D3/Doma ships portable Agent Skills (see skills/) instead.
+server:
+  name: doma
+  transport: http
+  url: null
+tools:
+- name: PollApiController_events
+  description: Poll for new Doma Protocol events
+  source_operation: openapi/d3-doma-openapi.json#PollApiController_events
+- name: PollApiController_acknowledgeEvent
+  description: Acknowledge received events
+  source_operation: openapi/d3-doma-openapi.json#PollApiController_acknowledgeEvent
+- name: PollApiController_resetLastAcknowledgedEventId
+  description: Reset last acknowledged event
+  source_operation: openapi/d3-doma-openapi.json#PollApiController_resetLastAcknowledgedEventId
+- name: OrderbookApiController_createListing
+  description: Create Listing
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_createListing
+- name: OrderbookApiController_createOffer
+  description: Create Offer
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_createOffer
+- name: OrderbookApiController_getOrderbookFee
+  description: Get orderbook fees
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_getOrderbookFee
+- name: OrderbookApiController_getListingById
+  description: Get Listing fulfillment data
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_getListingById
+- name: OrderbookApiController_getOfferById
+  description: Get Offer fulfillment data
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_getOfferById
+- name: OrderbookApiController_cancelListing
+  description: Cancel Listing
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_cancelListing
+- name: OrderbookApiController_cancelOffer
+  description: Cancel Offer
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_cancelOffer
+- name: OrderbookApiController_getSupportedCurrencies
+  description: Get supported currencies
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_getSupportedCurrencies
+- name: OrderbookApiController_createBulkListing
+  description: Create Bulk Listings
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_createBulkListing
+- name: OrderbookApiController_createBulkOffer
+  description: Create Bulk Offers
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_createBulkOffer
+- name: OrderbookApiController_getBulkListingItems
+  description: Get bulk listing items
+  source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_getBulkListingItems

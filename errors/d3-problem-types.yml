@@ -1,0 +1,22 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/d3-doma-openapi.json
+format: http-status
+notes: >-
+  Derived from the Doma Poll + Orderbook OpenAPI 4xx responses. Responses use
+  standard HTTP status codes (no RFC 9457 application/problem+json envelope
+  declared). All authenticated endpoints share the 400/401/403 set.
+problems:
+- status: 400
+  title: Bad Request
+  meaning: Malformed request — invalid parameters, order components, or signature.
+  occurs_on: 14 operations (all Poll + Orderbook endpoints)
+- status: 401
+  title: Unauthorized
+  meaning: Missing or invalid Api-Key header.
+  remediation: Provide a valid per-network Api-Key from app.doma.xyz/account/developers.
+  occurs_on: 13 operations
+- status: 403
+  title: Forbidden
+  meaning: API key lacks permission for the requested operation (e.g. VERIFIED_CONTACTS_UPLOAD scope).
+  occurs_on: 14 operations

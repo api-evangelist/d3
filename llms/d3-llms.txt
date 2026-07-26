@@ -1,0 +1,60 @@
+# Doma Documentation
+
+## DOMA Documentation
+
+- [Doma Protocol](https://docs.doma.xyz/readme.md)
+- [Protocol Overview](https://docs.doma.xyz/readme/protocol-overview.md)
+- [How the Internet Works Today](https://docs.doma.xyz/readme/domain-infrastructure-101.md)
+- [Glossary](https://docs.doma.xyz/readme/domain-infrastructure-101/glossary.md)
+- [Core Modules](https://docs.doma.xyz/readme/core-modules.md)
+- [DomainFi](https://docs.doma.xyz/readme/domainfi.md)
+- [Programmable DNS](https://docs.doma.xyz/programmable-dns.md)
+- [Unique Ownership Models](https://docs.doma.xyz/programmable-dns/unique-ownership-models.md)
+- [Shared Ownership: Liquid Domains](https://docs.doma.xyz/programmable-dns/shared-ownership-liquid-domains.md)
+- [How to tokenize a domain](https://docs.doma.xyz/getting-started.md)
+- [Building on Doma](https://docs.doma.xyz/building-on-doma.md)
+- [Doma Marketplace](https://docs.doma.xyz/doma-marketplace.md)
+- [API Reference](https://docs.doma.xyz/api-reference.md)
+- [Authentication and Rate Limits](https://docs.doma.xyz/api-reference/authentication-and-rate-limits.md)
+- [Domain Registration](https://docs.doma.xyz/api-reference/domain-registration.md)
+- [Doma Smart Contracts API](https://docs.doma.xyz/api-reference/doma-smart-contracts-api.md)
+- [(EVM) Proxy Doma Record API](https://docs.doma.xyz/api-reference/doma-smart-contracts-api/evm-proxy-doma-record-api.md)
+- [(EVM) Name Token Contract API](https://docs.doma.xyz/api-reference/doma-smart-contracts-api/evm-name-token-contract-api.md)
+- [Doma Multi-Chain Subgraph](https://docs.doma.xyz/api-reference/doma-multi-chain-subgraph.md)
+- [Poll API](https://docs.doma.xyz/api-reference/poll-api.md)
+- [Orderbook API](https://docs.doma.xyz/api-reference/orderbook-api.md)
+- [Doma Network Information](https://docs.doma.xyz/api-reference/doma-network-information.md)
+- [Deployed Smart Contracts](https://docs.doma.xyz/api-reference/deployed-smart-contracts.md)
+- [Supported TLDs](https://docs.doma.xyz/api-reference/supported-tlds.md)
+- [Doma Fractionalization](https://docs.doma.xyz/api-reference/doma-fractionalization.md)
+- [For Registrars](https://docs.doma.xyz/for-registrars.md)
+- [Agentic Commerce](https://docs.doma.xyz/agentic-commerce.md)
+- [AgentRoot](https://docs.doma.xyz/agentic-commerce/agentroot.md)
+- [Discover & Use Skills](https://docs.doma.xyz/agentic-commerce/agentroot/discover-and-use.md)
+- [Zone File Reference](https://docs.doma.xyz/agentic-commerce/agentroot/zone-file-reference.md)
+- [Publish Your Own](https://docs.doma.xyz/agentic-commerce/agentroot/publish-your-own.md)
+- [Doma CLI](https://docs.doma.xyz/agentic-commerce/doma-cli.md)
+- [Wallet Modes](https://docs.doma.xyz/agentic-commerce/doma-cli/wallet-modes.md)
+- [Commands](https://docs.doma.xyz/agentic-commerce/doma-cli/commands.md)
+- [Agentic Wallet](https://docs.doma.xyz/agentic-commerce/agentic-wallet.md)
+- [Skills](https://docs.doma.xyz/agentic-commerce/skills.md)
+- [Secondary Sales](https://docs.doma.xyz/agentic-commerce/skills/secondary-sales.md)
+- [Trade Tokens](https://docs.doma.xyz/agentic-commerce/skills/trade-tokens.md)
+- [MPP](https://docs.doma.xyz/agentic-commerce/skills/mpp.md)
+- [FAQ](https://docs.doma.xyz/faq.md)
+
+
+---
+
+# Agent Instructions
+This documentation is published with GitBook. GitBook is the documentation platform designed so that both humans and AI agents can read, navigate, and reason over technical content effectively. Learn more at gitbook.com.
+
+## Querying This Documentation
+If you need additional information, you can query the documentation dynamically by asking a question.
+Perform an HTTP GET request on a page URL with the `ask` query parameter:
+```
+GET https://docs.doma.xyz/readme.md?ask=<question>
+```
+The question should be specific, self-contained, and written in natural language.
+The response will contain a direct answer to the question and relevant excerpts and sources from the documentation.
+Use this mechanism when the answer is not explicitly present in the current page, you need clarification or additional context, or you want to retrieve related documentation sections.

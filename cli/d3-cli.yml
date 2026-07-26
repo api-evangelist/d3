@@ -1,0 +1,65 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.doma.xyz/agentic-commerce/doma-cli/commands
+name: Doma CLI
+binary: doma
+package: "@doma-protocol/cli"
+install:
+- npm install -g @doma-protocol/cli
+requires: Node.js >= 20
+config_file: ~/.doma/config.json
+agent_mode: true
+notes: >-
+  Local TypeScript tool that executes everything Doma skills decide on. Designed for
+  both human (interactive) and AI (--quiet --format json) use. Wallet modes: agent
+  (Privy delegated) or private-key (local).
+global_flags:
+- flag: "--testnet"
+  purpose: Run against Doma Testnet (chain 97476) instead of mainnet (97477).
+- flag: "-q, --quiet"
+  purpose: Suppress decorative output.
+- flag: "-f, --format <fmt>"
+  purpose: "Output format: pretty (default), json, csv."
+- flag: "-y, --yes"
+  purpose: Skip confirmation prompts.
+env_overrides:
+- DOMA_PRIVATE_KEY
+- DOMA_API_KEY
+- DOMA_API_URL
+- DOMA_ROUTING_API_URL
+- DOMA_CHAIN_ID
+- DOMA_TESTNET
+commands:
+- name: token
+  usage: doma token <token-name>
+  summary: Fetch detailed token information (price, 24h change, volume, venue, status).
+- name: balance
+  usage: doma balance [token]
+  summary: Show wallet balances (defaults to ETH + USDC).
+- name: quote
+  usage: doma quote <tokenIn> <tokenOut> <amount>
+  summary: Get a swap quote without executing.
+- name: swap
+  usage: doma swap <tokenIn> <tokenOut> <amount>
+  summary: Execute a token swap (auto-routes Launchpad / Uniswap V3 / multi-step).
+- name: marketplace
+  usage: doma marketplace <get|buy|listing|offer|accept|cancel> ...
+  summary: Seaport-based domain marketplace operations.
+- name: domain
+  usage: doma domain <domain-name>
+  summary: Read domain ownership and registration data.
+- name: dns
+  usage: doma dns <list|set|delete> <domain> ...
+  summary: Manage DNS records on the Doma chain (sponsored gas).
+- name: subdomain
+  usage: doma subdomain <claim|unstake> <subdomain>
+  summary: Claim or release a staked subdomain.
+- name: nameservers
+  usage: doma nameservers <get|set> <domain> ...
+  summary: Read or update authoritative nameservers for a tokenized domain.
+- name: bridge
+  usage: doma bridge <domain> --to <chainId>
+  summary: Move a name token across chains (uses Relay).
+- name: config
+  usage: doma config set <key> <value>
+  summary: Manage CLI configuration (~/.doma/config.json).

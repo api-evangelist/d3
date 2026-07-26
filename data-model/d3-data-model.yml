@@ -1,0 +1,53 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/d3-doma-openapi.json
+notes: >-
+  Entity graph derived from the Doma Poll + Orderbook OpenAPI schemas and the
+  domain-registration GraphQL guide. Doma models tokenized ICANN domains as
+  on-chain name tokens with an event stream and a Seaport-based orderbook.
+entities:
+- name: Name
+  aka: [Domain]
+  description: A tokenized ICANN domain name (fullName, tld, expiry, registrar, owner).
+  id_fields: [name, fullName]
+- name: NameToken
+  description: The on-chain ERC-721 token representing ownership of a Name.
+  id_fields: [tokenId]
+- name: Registrar
+  description: An ICANN-accredited registrar integrated with Doma.
+  id_fields: [registrarIanaId]
+- name: Order
+  aka: [Listing, Offer]
+  description: A Seaport order (fixed-price listing or offer) on a supported orderbook.
+  id_fields: [orderId]
+- name: Event
+  description: A Doma Protocol event emitted on the Poll API stream.
+  id_fields: [id, uniqueId]
+- name: FractionalToken
+  description: A fractionalized domain token traded via Launchpad bonding curve or Uniswap V3.
+  id_fields: [token]
+relationships:
+- from: NameToken
+  to: Name
+  type: belongs_to
+  via: name
+- from: Name
+  to: Registrar
+  type: belongs_to
+  via: registrarIanaId
+- from: Order
+  to: NameToken
+  type: references
+  via: tokenId
+- from: Event
+  to: NameToken
+  type: references
+  via: tokenId
+- from: Event
+  to: Name
+  type: references
+  via: name
+- from: FractionalToken
+  to: Name
+  type: derived_from
+  via: name

@@ -1,0 +1,32 @@
+generated: '2026-07-18'
+method: searched
+hosts:
+- host: https://doma.xyz
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/skills/secondary-sales/SKILL.md
+    status: 200
+    kind: agent-skill
+    saved: skills/d3-doma-secondary-sales-SKILL.md
+  - path: /.well-known/skills/trade-tokens/SKILL.md
+    status: 200
+    kind: agent-skill
+    saved: skills/d3-doma-trade-tokens-SKILL.md
+- host: https://api.doma.xyz
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+notes: >-
+  No standard security.txt / OIDC / oauth-authorization-server / api-catalog
+  documents are published. doma.xyz DOES serve a real .well-known/skills/ catalog
+  of published Agent Skills (portable SKILL.md files) — captured verbatim under
+  skills/. The MPP skill is served from /.agents/skills/doma-mpp/SKILL.md.

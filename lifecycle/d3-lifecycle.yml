@@ -1,0 +1,22 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.doma.xyz/api-reference/doma-network-information
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://docs.doma.xyz/api-reference
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: No formal deprecation policy or RFC 8594 Sunset/Deprecation header support found in the docs.
+sla:
+  url: null
+status_page: null
+networks:
+  mainnet: {chain_id: 97477, rpc: https://rpc.doma.xyz, explorer: https://explorer.doma.xyz, api: https://api.doma.xyz}
+  testnet: {chain_id: 97476, rpc: https://rpc-testnet.doma.xyz, explorer: https://explorer-testnet.doma.xyz, api: https://api-testnet.doma.xyz}
+deprecated_operations: []
+notes: >-
+  No dedicated status page (status.doma.xyz did not resolve) or published SLA/
+  deprecation policy was found at enrichment time. Network liveness is observable
+  via the block explorers. Update this file if D3/Doma publishes a status page.

@@ -1,0 +1,25 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.doma.xyz/agentic-commerce/doma-cli
+packages:
+- language: javascript
+  registry: npm
+  name: "@doma-protocol/cli"
+  url: https://www.npmjs.com/package/@doma-protocol/cli
+  install: npm install -g @doma-protocol/cli
+  binary: doma
+  official: true
+  notes: >-
+    Doma CLI — TypeScript tool that executes token swaps, marketplace orders, DNS
+    edits, bridges, subdomain operations, and authentication. Requires Node.js >= 20.
+repositories:
+- name: doma-register-example
+  url: https://github.com/d3-inc/doma-register-example
+  language: typescript
+  official: true
+  notes: Runnable Node.js example (viem + graphql-request) for domain registration.
+- name: d3-connect-snap
+  url: https://github.com/d3-inc/d3-connect-snap
+  language: typescript
+  official: true
+  notes: MetaMask Snap for D3 Connect.

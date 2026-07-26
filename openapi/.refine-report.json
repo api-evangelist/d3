@@ -1,0 +1,16 @@
+{
+  "provider": "d3",
+  "sources": [
+    "d3-events-poll-api-api-openapi.yml",
+    "d3-orderbook-api-api-openapi.yml"
+  ],
+  "outputs": [
+    "d3-events-poll-api-api-openapi.yml",
+    "d3-orderbook-api-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

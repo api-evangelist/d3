@@ -1,27 +1,138 @@
 aid: d3
 name: D3
-description: 'D3 is a company surfaced as a portfolio company of paradigm and added to the API Evangelist
-  network as a stub for enrichment. Sector: crypto-infrastructure. This profile is a lead awaiting the
-  enrichment pipeline.'
+description: >-
+  D3 is a crypto-infrastructure company building the internet's domain layer,
+  tokenized. Through its Doma Protocol, D3 brings ICANN domain names on-chain as
+  tokenized name assets and unlocks "DomainFi" — programmable DNS, fractionalized
+  domain tokens, an on-chain marketplace, and agentic commerce. Developers use the
+  Doma API (a GraphQL subgraph plus REST Poll and Orderbook APIs), the doma CLI,
+  and portable Agent Skills to register, tokenize, trade, and manage domains across
+  the Doma mainnet (chain 97477) and testnet (97476). D3 is backed by Paradigm.
 url: https://raw.githubusercontent.com/api-evangelist/d3/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - paradigm
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: enriched-from-doma-developer-surface
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
+image: https://d3.com/favicon-v2.svg
 tags:
 - Company
 - Crypto Infrastructure
-apis: []
+- Domains
+- DNS
+- Blockchain
+- Tokenization
+- Web3
+- DomainFi
+- Marketplace
+- Agentic Commerce
+apis:
+- aid: d3:d3-events-poll-api-api
+  name: D3 Events Poll API API
+  description: The Events Poll API API from D3 — 3 operation(s) for events poll api.
+  humanURL: https://docs.doma.xyz/api-reference
+  baseURL: https://api.doma.xyz
+  tags:
+  - Events Poll API
+  properties:
+  - type: OpenAPI
+    url: openapi/d3-events-poll-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.doma.xyz/api-reference
+  - type: Authentication
+    url: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
+- aid: d3:d3-orderbook-api-api
+  name: D3 Orderbook API API
+  description: The Orderbook API API from D3 — 11 operation(s) for orderbook api.
+  humanURL: https://docs.doma.xyz/api-reference
+  baseURL: https://api.doma.xyz
+  tags:
+  - Orderbook API
+  properties:
+  - type: OpenAPI
+    url: openapi/d3-orderbook-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.doma.xyz/api-reference
+  - type: Authentication
+    url: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/d3-domain-security.yml
 - type: Website
-  url: https://d3.inc
+  url: https://d3.com
+- type: DeveloperPortal
+  url: https://app.doma.xyz/account/developers
+- type: Documentation
+  url: https://docs.doma.xyz
+- type: APIReference
+  url: https://docs.doma.xyz/api-reference
+- type: GettingStarted
+  url: https://docs.doma.xyz/getting-started
+- type: Authentication
+  url: authentication/d3-authentication.yml
+- type: SignUp
+  url: https://app.doma.xyz/account/developers
+- type: Support
+  url: https://d3inc.atlassian.net/servicedesk/customer/portal/3
+- type: GitHubOrganization
+  url: https://github.com/d3-inc
+- type: TermsOfService
+  url: https://d3.com/terms
+- type: PrivacyPolicy
+  url: https://d3.com/privacy
+- type: OpenAPI
+  url: openapi/d3-doma-openapi.json
+- type: LLMsTxt
+  url: llms/d3-llms.txt
+- type: Packages
+  url: packages/d3-packages.yml
+- type: SDKs
+  url: packages/d3-packages.yml
+- type: CLI
+  url: cli/d3-cli.yml
+- type: MCPServer
+  url: mcp/d3-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Conventions
+  url: conventions/d3-conventions.yml
+- type: Idempotency
+  url: conventions/d3-conventions.yml
+- type: RateLimits
+  url: rate-limits/d3-rate-limits.yml
+- type: Lifecycle
+  url: lifecycle/d3-lifecycle.yml
+- type: ErrorCatalog
+  url: errors/d3-problem-types.yml
+- type: Conformance
+  url: conformance/d3-conformance.yml
+- type: DataModel
+  url: data-model/d3-data-model.yml
+- type: WellKnown
+  url: well-known/d3-well-known.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

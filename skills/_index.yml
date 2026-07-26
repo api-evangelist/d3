@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.doma.xyz/agentic-commerce/skills
+notes: >-
+  Provider-published, portable Agent Skills (SKILL.md) hosted by Doma at public
+  well-known URLs and saved verbatim. Same SKILL.md works in Claude Code, Cursor,
+  Codex CLI, Gemini, OpenCode. Each drives the doma CLI.
+skills:
+- file: d3-doma-secondary-sales-SKILL.md
+  name: doma-secondary-sales
+  description: Buy domains listed on the Doma marketplace (Seaport NFT) across all ICANN TLDs.
+  manifest: https://doma.xyz/.well-known/skills/secondary-sales/SKILL.md
+  api: openapi/d3-doma-openapi.json
+- file: d3-doma-trade-tokens-SKILL.md
+  name: doma-trade-tokens
+  description: Buy or sell fractionalized Doma domain tokens (Launchpad bonding curve, Uniswap V3, sellOnFail).
+  manifest: https://doma.xyz/.well-known/skills/trade-tokens/SKILL.md
+  api: openapi/d3-doma-openapi.json
+- file: d3-doma-mpp-SKILL.md
+  name: doma-mpp
+  description: Pay HTTP 402 endpoints for domain registration via the Machine Payments Protocol (MPP).
+  manifest: https://doma.xyz/.agents/skills/doma-mpp/SKILL.md
+  api: openapi/d3-doma-openapi.json

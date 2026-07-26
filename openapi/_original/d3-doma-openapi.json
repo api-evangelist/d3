@@ -1,0 +1,3969 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Doma Protocol API",
+    "version": "1.0",
+    "description": "Doma Protocol API (Poll API + Orderbook API) for D3's on-chain domain tokenization protocol. Aggregated by API Evangelist from the per-operation OpenAPI fragments published in the Doma docs (docs.doma.xyz). Authenticate with an Api-Key header; rate limited to 10 req/s."
+  },
+  "servers": [
+    {
+      "url": "https://api.doma.xyz",
+      "description": "Mainnet"
+    },
+    {
+      "url": "https://api-testnet.doma.xyz",
+      "description": "Testnet"
+    }
+  ],
+  "security": [
+    {
+      "Api-Key": []
+    }
+  ],
+  "paths": {
+    "/v1/poll": {
+      "get": {
+        "description": "Returns blockchain events that have occurred since the last acknowledged event.",
+        "operationId": "PollApiController_events",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor identifier to use for tracking the polling state. Can be used to manage multiple independent polling states.",
+            "schema": {
+              "maxLength": 255
+            }
+          },
+          {
+            "name": "eventTypes",
+            "required": false,
+            "in": "query",
+            "description": "Filter events by type. Can be provided multiple times to filter by multiple types.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "NAME_TOKENIZATION_REQUESTED",
+                  "NAME_TOKENIZATION_REJECTED",
+                  "NAME_TOKENIZED",
+                  "NAME_UPDATED",
+                  "NAME_RENEWED",
+                  "NAME_CLAIMED",
+                  "NAME_CLAIM_REQUESTED",
+                  "NAME_CLAIM_REJECTED",
+                  "NAME_CLAIM_APPROVED",
+                  "NAME_DETOKENIZED",
+                  "NAME_TOKEN_MINTED",
+                  "NAME_TOKEN_TRANSFERRED",
+                  "NAME_TOKEN_RENEWED",
+                  "NAME_TOKEN_BURNED",
+                  "NAME_TOKEN_APPROVED_FOR_ALL",
+                  "NAME_TOKEN_TRANSFER_APPROVED",
+                  "NAME_TOKEN_TRANSFER_APPROVAL_REVOKED",
+                  "NAME_TOKEN_LOCK_STATUS_CHANGED",
+                  "NAME_TOKEN_BRIDGED",
+                  "PAYMENT_FULFILLED",
+                  "NAME_TOKEN_BOUGHT_OUT",
+                  "NAME_NAMESERVERS_UPDATE_REQUESTED",
+                  "NAME_DS_KEYS_UPDATE_REQUESTED",
+                  "NAME_DNS_RR_SET_UPDATE_REQUESTED",
+                  "SYNTHETIC_TOKEN_MINTED",
+                  "NAME_TOKEN_LISTED",
+                  "NAME_TOKEN_OFFER_RECEIVED",
+                  "NAME_TOKEN_LISTING_CANCELLED",
+                  "NAME_TOKEN_OFFER_CANCELLED",
+                  "NAME_TOKEN_PURCHASED",
+                  "NAME_TOKENS_BULK_LISTED",
+                  "COMMAND_CREATED",
+                  "COMMAND_SUCCEEDED",
+                  "COMMAND_FAILED",
+                  "COMMAND_UPDATED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of events to return in a single response page.",
+            "schema": {
+              "minimum": 1
+            }
+          },
+          {
+            "name": "includeSynthetics",
+            "required": false,
+            "in": "query",
+            "description": "Whether to include synthetic token events.",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "finalizedOnly",
+            "required": false,
+            "in": "query",
+            "description": "Whether to return only finalized events.",
+            "schema": {
+              "default": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventsPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid query parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'EVENTS' permission."
+          }
+        },
+        "summary": "Poll for new Doma Protocol events",
+        "tags": [
+          "Events Poll API"
+        ]
+      }
+    },
+    "/v1/poll/ack/{lastEventId}": {
+      "post": {
+        "description": "Updates the last acknowledged event id for the client.",
+        "operationId": "PollApiController_acknowledgeEvent",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor identifier to use for tracking the polling state. Can be used to manage multiple independent polling states.",
+            "schema": {
+              "maxLength": 255
+            }
+          },
+          {
+            "name": "lastEventId",
+            "required": false,
+            "in": "path",
+            "description": "Last event id that was processed by the client.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Bad Request. Invalid event id."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'EVENTS' permission."
+          }
+        },
+        "summary": "Acknowledge received events",
+        "tags": [
+          "Events Poll API"
+        ]
+      }
+    },
+    "/v1/poll/reset/{eventId}": {
+      "post": {
+        "description": "Updates the last acknowledged event id for the client. Can be used to reset the polling state to re-consume events.",
+        "operationId": "PollApiController_resetLastAcknowledgedEventId",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Cursor identifier to use for tracking the polling state. Can be used to manage multiple independent polling states.",
+            "schema": {
+              "maxLength": 255
+            }
+          },
+          {
+            "name": "eventId",
+            "required": false,
+            "in": "path",
+            "description": "Event id to reset the last acknowledged event id to.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "Bad Request. Invalid event id."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'EVENTS' permission."
+          }
+        },
+        "summary": "Reset last acknowledged event",
+        "tags": [
+          "Events Poll API"
+        ]
+      }
+    },
+    "/v1/orderbook/list": {
+      "post": {
+        "description": "Create a fixed priced listing on a supported orderbook (OpenSea, Doma).",
+        "operationId": "OrderbookApiController_createListing",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid query parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Create Listing",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/offer": {
+      "post": {
+        "description": "Create an offer on a supported orderbook (OpenSea, Doma).",
+        "operationId": "OrderbookApiController_createOffer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid query parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Create Offer",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/fee/{orderbook}/{chainId}/{contractAddress}": {
+      "get": {
+        "description": "Get marketplace fees for a specific orderbook and chain.",
+        "operationId": "OrderbookApiController_getOrderbookFee",
+        "parameters": [
+          {
+            "name": "orderbook",
+            "required": true,
+            "in": "path",
+            "description": "The orderbook type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "path",
+            "description": "The chain ID in CAIP-2 format",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "description": "The contract address of the token being listed or offered.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrderbookFeeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid path parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Get orderbook fees",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/listing/{orderId}/{buyer}": {
+      "get": {
+        "description": "Get listing fulfillment data by order id and buyer address.",
+        "operationId": "OrderbookApiController_getListingById",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "description": "The Order ID of the listing.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "buyer",
+            "required": true,
+            "in": "path",
+            "description": "Buyer address, in native chain format.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrderByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid query parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Get Listing fulfillment data",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/offer/{orderId}/{fulfiller}": {
+      "get": {
+        "description": "Get offer fulfillment data by order id and fulfiller (token owner) address.",
+        "operationId": "OrderbookApiController_getOfferById",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "description": "The Order ID of the offer.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fulfiller",
+            "required": true,
+            "in": "path",
+            "description": "Fulfiller address, in native chain format. This is the address that owns the name token.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrderByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid query parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Get Offer fulfillment data",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/listing/cancel": {
+      "post": {
+        "description": "Cancel a listing on a supported orderbook (OpenSea, Doma).",
+        "operationId": "OrderbookApiController_cancelListing",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid signature or order not found."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Cancel Listing",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/offer/cancel": {
+      "post": {
+        "description": "Cancel an offer on a supported orderbook (OpenSea, Doma).",
+        "operationId": "OrderbookApiController_cancelOffer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid signature or order not found."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Cancel Offer",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/currencies/{chainId}/{contractAddress}/{orderbook}": {
+      "get": {
+        "description": "Get all supported currency tokens for orderbook operations on a specific chain.",
+        "operationId": "OrderbookApiController_getSupportedCurrencies",
+        "parameters": [
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "path",
+            "description": "The chain ID in CAIP-2 format",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "description": "The contract address of the token.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderbook",
+            "required": true,
+            "in": "path",
+            "description": "The name of the orderbook.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrenciesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid chain ID format."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Get supported currencies",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/list/bulk": {
+      "post": {
+        "description": "Create multiple fixed priced listings on a supported orderbook (Doma and OpenSea).",
+        "operationId": "OrderbookApiController_createBulkListing",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkOrderRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBulkOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid query parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Create Bulk Listings",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/offer/bulk": {
+      "post": {
+        "description": "Create multiple fixed priced offers on a supported orderbook (Doma and OpenSea).",
+        "operationId": "OrderbookApiController_createBulkOffer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkOrderRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBulkOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Invalid query parameters."
+          },
+          "401": {
+            "description": "Unauthorized. API Key is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Create Bulk Offers",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    },
+    "/v1/orderbook/list/bulk/{id}/items": {
+      "get": {
+        "description": "Get paginated items for a bulk listing by bulk listing ID.",
+        "operationId": "OrderbookApiController_getBulkListingItems",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Bulk listing ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bulk listing items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedBulkListingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Bulk listing not found or invalid parameters."
+          },
+          "403": {
+            "description": "Forbidden. API Key is missing 'ORDERBOOK' permission."
+          }
+        },
+        "summary": "Get bulk listing items",
+        "tags": [
+          "Orderbook API"
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Api-Key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Api-Key"
+      }
+    },
+    "schemas": {
+      "EventsPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "description": "List of events.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventResponse"
+            }
+          },
+          "lastId": {
+            "type": "number",
+            "description": "Last returned event id. Should be used with `/poll/ack` API to acknowledge events receive."
+          },
+          "hasMoreEvents": {
+            "type": "boolean",
+            "description": "If true, more events might be available. They could be retrieved by acknowledging the last event id, or by increasing the `limit`."
+          }
+        },
+        "required": [
+          "events"
+        ]
+      },
+      "EventResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Unique event id."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name. Returned only for name-specific events."
+          },
+          "eoi": {
+            "type": "boolean",
+            "description": "Whether this is an Expression of Interest (EOI) name."
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Associated name token id. Returned only for token-specific events."
+          },
+          "type": {
+            "description": "Event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicEventType"
+              }
+            ]
+          },
+          "uniqueId": {
+            "type": "string",
+            "description": "Globally unique event id. Generated from a public on-chain data. Could be used to track same events across different systems."
+          },
+          "relayId": {
+            "type": "string",
+            "description": "Relay ID that was used to submit a transaction that triggered this event. Will only be present for events triggered by the Relay API."
+          },
+          "eventData": {
+            "description": "Event-specific data.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenMintedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenBurnedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenTransferredEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenApprovedForAllEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenLockStatusChangeEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/PaymentFulfilledEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenTransferApprovedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenTransferApprovalRevokedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenRenewedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenizedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameUpdatedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameRenewedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameClaimedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameDetokenizedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenizationRequestedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenizationRejectedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/CommandCreatedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/CommandSucceededEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/CommandFailedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/CommandUpdatedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameClaimRequestedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameClaimApprovedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameClaimRejectedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameNameServersUpdateRequestedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameDsKeysUpdateRequestedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameDNSRRSetUpdateRequestedResponse"
+              },
+              {
+                "$ref": "#/components/schemas/SyntheticTokenMintedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenListedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenOfferReceivedEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenListingCancelledEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenOfferCancelledEventResponse"
+              },
+              {
+                "$ref": "#/components/schemas/NameTokenPurchasedEventResponse"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "eoi",
+          "type",
+          "eventData"
+        ]
+      },
+      "PublicEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKENIZATION_REQUESTED",
+          "NAME_TOKENIZATION_REJECTED",
+          "NAME_TOKENIZED",
+          "NAME_UPDATED",
+          "NAME_RENEWED",
+          "NAME_CLAIMED",
+          "NAME_CLAIM_REQUESTED",
+          "NAME_CLAIM_REJECTED",
+          "NAME_CLAIM_APPROVED",
+          "NAME_DETOKENIZED",
+          "NAME_TOKEN_MINTED",
+          "NAME_TOKEN_TRANSFERRED",
+          "NAME_TOKEN_RENEWED",
+          "NAME_TOKEN_BURNED",
+          "NAME_TOKEN_APPROVED_FOR_ALL",
+          "NAME_TOKEN_TRANSFER_APPROVED",
+          "NAME_TOKEN_TRANSFER_APPROVAL_REVOKED",
+          "NAME_TOKEN_LOCK_STATUS_CHANGED",
+          "NAME_TOKEN_BRIDGED",
+          "PAYMENT_FULFILLED",
+          "NAME_TOKEN_BOUGHT_OUT",
+          "NAME_NAMESERVERS_UPDATE_REQUESTED",
+          "NAME_DS_KEYS_UPDATE_REQUESTED",
+          "NAME_DNS_RR_SET_UPDATE_REQUESTED",
+          "SYNTHETIC_TOKEN_MINTED",
+          "NAME_TOKEN_LISTED",
+          "NAME_TOKEN_OFFER_RECEIVED",
+          "NAME_TOKEN_LISTING_CANCELLED",
+          "NAME_TOKEN_OFFER_CANCELLED",
+          "NAME_TOKEN_PURCHASED",
+          "NAME_TOKENS_BULK_LISTED",
+          "COMMAND_CREATED",
+          "COMMAND_SUCCEEDED",
+          "COMMAND_FAILED",
+          "COMMAND_UPDATED"
+        ],
+        "description": "Event type."
+      },
+      "NameTokenMintedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenMintEventType"
+              }
+            ]
+          },
+          "registrarIanaId": {
+            "type": "number",
+            "description": "Registrar IANA ID."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Token owner."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date. ISO8601 format.",
+            "format": "date-time"
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "registrarIanaId",
+          "owner",
+          "name",
+          "expiresAt"
+        ]
+      },
+      "NameTokenMintEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_MINTED"
+        ],
+        "description": "Blockchain event type"
+      },
+      "NameTokenBurnedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenBurnedEventType"
+              }
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "owner"
+        ]
+      },
+      "NameTokenBurnedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_BURNED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenTransferredEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenTransferredEventType"
+              }
+            ]
+          },
+          "from": {
+            "type": "string",
+            "description": "Sender."
+          },
+          "to": {
+            "type": "string",
+            "description": "Recipient."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "from",
+          "to"
+        ]
+      },
+      "NameTokenTransferredEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_TRANSFERRED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenApprovedForAllEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenApprovedForAllEventType"
+              }
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "description": "Token owner."
+          },
+          "operator": {
+            "type": "string",
+            "description": "Approved operator address."
+          },
+          "approved": {
+            "type": "boolean",
+            "description": "Approval status."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "type",
+          "owner",
+          "operator",
+          "approved"
+        ]
+      },
+      "NameTokenApprovedForAllEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_APPROVED_FOR_ALL"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenLockStatusChangeEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenLockStatusChangedEventType"
+              }
+            ]
+          },
+          "isTransferLocked": {
+            "type": "boolean",
+            "description": "Whether the transfer is locked for a given token."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "isTransferLocked"
+        ]
+      },
+      "NameTokenLockStatusChangedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_LOCK_STATUS_CHANGED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "PaymentFulfilledEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentFulfilledEventType"
+              }
+            ]
+          },
+          "paymentContract": {
+            "type": "string",
+            "description": "Payment contract address."
+          },
+          "buyer": {
+            "type": "string",
+            "description": "Buyer."
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount paid."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "Address of the token used for payment."
+          },
+          "paymentId": {
+            "type": "string",
+            "description": "Payment ID."
+          },
+          "immediateMint": {
+            "type": "boolean",
+            "description": "True if it should be minted immediately."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "type",
+          "paymentContract",
+          "buyer",
+          "amount"
+        ]
+      },
+      "PaymentFulfilledEventType": {
+        "type": "string",
+        "enum": [
+          "PAYMENT_FULFILLED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenTransferApprovedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenTransferApprovedEventType"
+              }
+            ]
+          },
+          "operator": {
+            "type": "string",
+            "description": "Approved operator address."
+          },
+          "approvalId": {
+            "type": "number",
+            "description": "Approval ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "operator",
+          "approvalId"
+        ]
+      },
+      "NameTokenTransferApprovedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_TRANSFER_APPROVED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenTransferApprovalRevokedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenTransferApprovalRevokedEventType"
+              }
+            ]
+          },
+          "operator": {
+            "type": "string",
+            "description": "Approved operator address."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "operator"
+        ]
+      },
+      "NameTokenTransferApprovalRevokedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_TRANSFER_APPROVAL_REVOKED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenRenewedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenRenewalEventType"
+              }
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date. ISO8601 format.",
+            "format": "date-time"
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "expiresAt"
+        ]
+      },
+      "NameTokenRenewalEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_RENEWED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenizedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenizedEventType"
+              }
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date. ISO8601 format.",
+            "format": "date-time"
+          },
+          "nameservers": {
+            "description": "List of nameserver.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dsKeys": {
+            "description": "List of DS Keys.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsKeyResponseData"
+            }
+          },
+          "claimedBy": {
+            "type": "string",
+            "description": "Current wallet address that claimed the name. CAIP-10 format."
+          },
+          "ownershipTokenAddress": {
+            "type": "string",
+            "description": "NFT contract address",
+            "nullable": true
+          },
+          "tokenId": {
+            "type": "object",
+            "description": "Token ID",
+            "nullable": true
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "type",
+          "expiresAt",
+          "nameservers",
+          "dsKeys",
+          "claimedBy",
+          "ownershipTokenAddress",
+          "tokenId"
+        ]
+      },
+      "NameTokenizedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKENIZED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "DsKeyResponseData": {
+        "type": "object",
+        "properties": {
+          "keyTag": {
+            "type": "number",
+            "description": "DS Key Tag."
+          },
+          "algorithm": {
+            "type": "number",
+            "description": "DS Key Algorithm."
+          },
+          "digestType": {
+            "type": "number",
+            "description": "DS Key Digest Type."
+          },
+          "digest": {
+            "type": "string",
+            "description": "DS Key Digest."
+          }
+        },
+        "required": [
+          "keyTag",
+          "algorithm",
+          "digestType",
+          "digest"
+        ]
+      },
+      "NameUpdatedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameUpdatedEventType"
+              }
+            ]
+          },
+          "nameservers": {
+            "description": "List of nameservers.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dsKeys": {
+            "description": "List of DS Keys.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsKeyResponseData"
+            }
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "type",
+          "nameservers",
+          "dsKeys"
+        ]
+      },
+      "NameUpdatedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_UPDATED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameRenewedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameRenewedEventType"
+              }
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date. ISO8601 format.",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "type",
+          "expiresAt"
+        ]
+      },
+      "NameRenewedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_RENEWED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameClaimedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "claimedBy": {
+            "type": "string",
+            "description": "Wallet address that was used for claim. CAIP-10 format."
+          },
+          "proofSource": {
+            "description": "Indicates the source of contacts information. \"registrantHandle\" is used as a unique identifier within this source. Following values are possible: \n0 - NONE. No contacts provided. Only used for EOIs. \n1 - REGISTRAR. Registrar has approved claim, and holds the contact information. \"registrantHandle\" holds internal registrar-supplied identifier. \n2 - DOMA. Doma has approved claim, and holds the contact information. \"registrantHandle\" holds contacts identifier in Doma API, that should be used with /registrant/{handle} API to obtain encrypted contact information.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProofSource"
+              }
+            ]
+          },
+          "registrantHandle": {
+            "type": "string",
+            "description": "Unique identifier that can be used to obtain contact information."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameClaimedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "claimedBy",
+          "proofSource",
+          "registrantHandle",
+          "type"
+        ]
+      },
+      "ProofSource": {
+        "type": "number",
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "description": "Indicates the source of contacts information. \"registrantHandle\" is used as a unique identifier within this source. Following values are possible: \n0 - NONE. No contacts provided. Only used for EOIs. \n1 - REGISTRAR. Registrar has approved claim, and holds the contact information. \"registrantHandle\" holds internal registrar-supplied identifier. \n2 - DOMA. Doma has approved claim, and holds the contact information. \"registrantHandle\" holds contacts identifier in Doma API, that should be used with /registrant/{handle} API to obtain encrypted contact information."
+      },
+      "NameClaimedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_CLAIMED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameDetokenizedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameDetokenizedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "type"
+        ]
+      },
+      "NameDetokenizedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_DETOKENIZED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenizationRequestedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenizationRequestedEventType"
+              }
+            ]
+          },
+          "ownershipTokenChainId": {
+            "type": "string",
+            "description": "CAIP-2 chain Id on which tokenization was requested"
+          },
+          "ownershipTokenOwnerAddress": {
+            "type": "string",
+            "description": "Owner address on a target chain."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "type",
+          "ownershipTokenChainId",
+          "ownershipTokenOwnerAddress"
+        ]
+      },
+      "NameTokenizationRequestedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKENIZATION_REQUESTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameTokenizationRejectedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenizationRejectedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "type"
+        ]
+      },
+      "NameTokenizationRejectedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKENIZATION_REJECTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "CommandCreatedEventResponse": {
+        "type": "object",
+        "properties": {
+          "relayId": {
+            "type": "string",
+            "description": "Associated relay id, that was used to crate this command."
+          },
+          "transactions": {
+            "description": "List of transactions associated with the command event.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommandTransaction"
+            }
+          },
+          "failureData": {
+            "description": "Failure data for a failed command. Only present for failed commands. Contains information about the error that caused the command to fail.",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandFailureData"
+              }
+            ]
+          },
+          "type": {
+            "description": "Command event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandCreatedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "relayId",
+          "transactions",
+          "failureData",
+          "type"
+        ]
+      },
+      "CommandTransaction": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "The type of the blockchain transaction command.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BlockchainTransactionCommandType"
+              }
+            ]
+          },
+          "status": {
+            "description": "The current status of the blockchain transaction.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BlockchainTransactionStatus"
+              }
+            ]
+          },
+          "chainId": {
+            "type": "string",
+            "description": "The identifier of the blockchain network where the transaction is executed."
+          },
+          "hash": {
+            "type": "object",
+            "description": "The hash of the blockchain transaction."
+          },
+          "signer": {
+            "type": "object",
+            "description": "The signer of the transaction, or null if no signer is present."
+          },
+          "gasPrice": {
+            "type": "object",
+            "description": "The gas price of the transaction, or null if not available."
+          },
+          "gasCost": {
+            "type": "object",
+            "description": "The gas cost of the transaction, or null if not available."
+          }
+        },
+        "required": [
+          "type",
+          "status",
+          "chainId"
+        ]
+      },
+      "BlockchainTransactionCommandType": {
+        "type": "string",
+        "enum": [
+          "RELAY",
+          "CLAIM",
+          "UPDATE_METADATA",
+          "SET_REVERSE_MAPPING",
+          "SUBMIT_CROSS_CHAIN_MESSAGE",
+          "LAUNCHPAD_UNLOCK_FAIL_LAUNCH",
+          "BULK_BURN_INACTIVE_SYNTHETIC"
+        ],
+        "description": "The type of the blockchain transaction command."
+      },
+      "BlockchainTransactionStatus": {
+        "type": "string",
+        "enum": [
+          "SIGNED",
+          "PENDING",
+          "SUCCEEDED",
+          "FAILED",
+          "FAILED_OUT_OF_GAS",
+          "FAILED_TO_SUBMIT",
+          "TIMED_OUT"
+        ],
+        "description": "The current status of the blockchain transaction."
+      },
+      "CommandFailureData": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "description": "Chain ID of the blockchain transaction (CAIP-2 format)."
+          },
+          "address": {
+            "type": "object",
+            "description": "Address of the contract that failed.",
+            "nullable": true
+          },
+          "methodName": {
+            "type": "object",
+            "description": "Name of the method that failed.",
+            "nullable": true
+          },
+          "methodArgs": {
+            "type": "object",
+            "description": "Arguments of the method that failed.",
+            "nullable": true
+          },
+          "error": {
+            "description": "Error that caused the command to fail.",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BlockchainTransactionError"
+              }
+            ]
+          },
+          "rawError": {
+            "type": "string",
+            "description": "Raw error that caused the command to fail."
+          }
+        },
+        "required": [
+          "chainId",
+          "address",
+          "methodName",
+          "methodArgs",
+          "error",
+          "rawError"
+        ]
+      },
+      "BlockchainTransactionError": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Error name."
+          },
+          "args": {
+            "type": "string",
+            "description": "Error arguments."
+          },
+          "signature": {
+            "type": "string",
+            "description": "Error signature."
+          },
+          "selector": {
+            "type": "string",
+            "description": "Error selector."
+          }
+        },
+        "required": [
+          "name",
+          "args",
+          "signature",
+          "selector"
+        ]
+      },
+      "CommandCreatedEventType": {
+        "type": "string",
+        "enum": [
+          "COMMAND_CREATED"
+        ],
+        "description": "Command event type"
+      },
+      "CommandSucceededEventResponse": {
+        "type": "object",
+        "properties": {
+          "relayId": {
+            "type": "string",
+            "description": "Associated relay id, that was used to crate this command."
+          },
+          "transactions": {
+            "description": "List of transactions associated with the command event.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommandTransaction"
+            }
+          },
+          "failureData": {
+            "description": "Failure data for a failed command. Only present for failed commands. Contains information about the error that caused the command to fail.",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandFailureData"
+              }
+            ]
+          },
+          "type": {
+            "description": "Command event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandSucceededEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "relayId",
+          "transactions",
+          "failureData",
+          "type"
+        ]
+      },
+      "CommandSucceededEventType": {
+        "type": "string",
+        "enum": [
+          "COMMAND_SUCCEEDED"
+        ],
+        "description": "Command event type"
+      },
+      "CommandFailedEventResponse": {
+        "type": "object",
+        "properties": {
+          "relayId": {
+            "type": "string",
+            "description": "Associated relay id, that was used to crate this command."
+          },
+          "transactions": {
+            "description": "List of transactions associated with the command event.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommandTransaction"
+            }
+          },
+          "failureData": {
+            "description": "Failure data for a failed command. Only present for failed commands. Contains information about the error that caused the command to fail.",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandFailureData"
+              }
+            ]
+          },
+          "type": {
+            "description": "Command event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandFailedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "relayId",
+          "transactions",
+          "failureData",
+          "type"
+        ]
+      },
+      "CommandFailedEventType": {
+        "type": "string",
+        "enum": [
+          "COMMAND_FAILED"
+        ],
+        "description": "Command event type"
+      },
+      "CommandUpdatedEventResponse": {
+        "type": "object",
+        "properties": {
+          "relayId": {
+            "type": "string",
+            "description": "Associated relay id, that was used to crate this command."
+          },
+          "transactions": {
+            "description": "List of transactions associated with the command event.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommandTransaction"
+            }
+          },
+          "failureData": {
+            "description": "Failure data for a failed command. Only present for failed commands. Contains information about the error that caused the command to fail.",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandFailureData"
+              }
+            ]
+          },
+          "type": {
+            "description": "Command event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandUpdatedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "relayId",
+          "transactions",
+          "failureData",
+          "type"
+        ]
+      },
+      "CommandUpdatedEventType": {
+        "type": "string",
+        "enum": [
+          "COMMAND_UPDATED"
+        ],
+        "description": "Command event type"
+      },
+      "NameClaimRequestedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "claimedBy": {
+            "type": "string",
+            "description": "Wallet address that was used for claim. CAIP-10 format."
+          },
+          "proofSource": {
+            "description": "Indicates the source of contacts information. \"registrantHandle\" is used as a unique identifier within this source. Following values are possible: \n0 - NONE. No contacts provided. Only used for EOIs. \n1 - REGISTRAR. Registrar has approved claim, and holds the contact information. \"registrantHandle\" holds internal registrar-supplied identifier. \n2 - DOMA. Doma has approved claim, and holds the contact information. \"registrantHandle\" holds contacts identifier in Doma API, that should be used with /registrant/{handle} API to obtain encrypted contact information.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProofSource"
+              }
+            ]
+          },
+          "registrantHandle": {
+            "type": "string",
+            "description": "Unique identifier that can be used to obtain contact information."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameClaimRequestedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "claimedBy",
+          "proofSource",
+          "registrantHandle",
+          "type"
+        ]
+      },
+      "NameClaimRequestedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_CLAIM_REQUESTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameClaimApprovedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "claimedBy": {
+            "type": "string",
+            "description": "Wallet address that was used for claim. CAIP-10 format."
+          },
+          "proofSource": {
+            "description": "Indicates the source of contacts information. \"registrantHandle\" is used as a unique identifier within this source. Following values are possible: \n0 - NONE. No contacts provided. Only used for EOIs. \n1 - REGISTRAR. Registrar has approved claim, and holds the contact information. \"registrantHandle\" holds internal registrar-supplied identifier. \n2 - DOMA. Doma has approved claim, and holds the contact information. \"registrantHandle\" holds contacts identifier in Doma API, that should be used with /registrant/{handle} API to obtain encrypted contact information.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProofSource"
+              }
+            ]
+          },
+          "registrantHandle": {
+            "type": "string",
+            "description": "Unique identifier that can be used to obtain contact information."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameClaimApprovedEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "claimedBy",
+          "proofSource",
+          "registrantHandle",
+          "type"
+        ]
+      },
+      "NameClaimApprovedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_CLAIM_APPROVED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameClaimRejectedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "domaRecordAddress": {
+            "type": "string",
+            "description": "Address of a Doma Record Smart Contract."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          },
+          "claimedBy": {
+            "type": "string",
+            "description": "Wallet address that was used for claim. CAIP-10 format."
+          },
+          "proofSource": {
+            "description": "Indicates the source of contacts information. \"registrantHandle\" is used as a unique identifier within this source. Following values are possible: \n0 - NONE. No contacts provided. Only used for EOIs. \n1 - REGISTRAR. Registrar has approved claim, and holds the contact information. \"registrantHandle\" holds internal registrar-supplied identifier. \n2 - DOMA. Doma has approved claim, and holds the contact information. \"registrantHandle\" holds contacts identifier in Doma API, that should be used with /registrant/{handle} API to obtain encrypted contact information.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProofSource"
+              }
+            ]
+          },
+          "registrantHandle": {
+            "type": "string",
+            "description": "Unique identifier that can be used to obtain contact information."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameClaimRejectEventType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "domaRecordAddress",
+          "name",
+          "claimedBy",
+          "proofSource",
+          "registrantHandle",
+          "type"
+        ]
+      },
+      "NameClaimRejectEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_CLAIM_REJECTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameNameServersUpdateRequestedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameNameserversUpdateRequestedEventType"
+              }
+            ]
+          },
+          "sld": {
+            "type": "string",
+            "description": "Second-level domain (SLD) of the name."
+          },
+          "tld": {
+            "type": "string",
+            "description": "Top-level domain (TLD) of the name."
+          },
+          "nameservers": {
+            "description": "Nameservers to set for the name.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "type",
+          "sld",
+          "tld",
+          "nameservers"
+        ]
+      },
+      "NameNameserversUpdateRequestedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_NAMESERVERS_UPDATE_REQUESTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameDsKeysUpdateRequestedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameDsKeysUpdateRequestedEventType"
+              }
+            ]
+          },
+          "sld": {
+            "type": "string",
+            "description": "Second-level domain (SLD) of the name."
+          },
+          "tld": {
+            "type": "string",
+            "description": "Top-level domain (TLD) of the name."
+          },
+          "dsKeys": {
+            "description": "List of DS Keys.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsKeyResponseData"
+            }
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "type",
+          "sld",
+          "tld",
+          "dsKeys"
+        ]
+      },
+      "NameDsKeysUpdateRequestedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_DS_KEYS_UPDATE_REQUESTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "NameDNSRRSetUpdateRequestedResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameDNSRRSetUpdateRequestedEventType"
+              }
+            ]
+          },
+          "sld": {
+            "type": "string",
+            "description": "Second-level domain (SLD) of the name."
+          },
+          "tld": {
+            "type": "string",
+            "description": "Top-level domain (TLD) of the name."
+          },
+          "host": {
+            "type": "string",
+            "description": "The host for the DNS record."
+          },
+          "recordType": {
+            "type": "string",
+            "description": "The type of the DNS record."
+          },
+          "ttl": {
+            "type": "number",
+            "description": "The time-to-live (TTL) value for the DNS record."
+          },
+          "records": {
+            "description": "The list of DNS record values.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "useDomaNameservers": {
+            "type": "boolean",
+            "description": "Indicates whether to use Doma nameservers."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "type",
+          "sld",
+          "tld",
+          "host",
+          "recordType",
+          "ttl",
+          "records",
+          "useDomaNameservers"
+        ]
+      },
+      "NameDNSRRSetUpdateRequestedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_DNS_RR_SET_UPDATE_REQUESTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "SyntheticTokenMintedEventResponse": {
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "CAIP2 Chain Id."
+          },
+          "finalized": {
+            "type": "boolean",
+            "description": "Whether this even is finalized on-chain."
+          },
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash."
+          },
+          "blockNumber": {
+            "type": "string",
+            "description": "Block height from which the event was indexed."
+          },
+          "logIndex": {
+            "type": "number",
+            "description": "Field specific for EVM chains. Index of a an even log in a block. Together with blockNumber and networkId it uniquely identifies an event."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "type": {
+            "description": "Blockchain event type.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SyntheticTokenMintedEventType"
+              }
+            ]
+          },
+          "registrarIanaId": {
+            "type": "number",
+            "description": "Registrar IANA ID."
+          },
+          "owner": {
+            "type": "string",
+            "description": "Token owner address."
+          },
+          "ownership": {
+            "type": "boolean",
+            "description": "Whether the token has ownership."
+          },
+          "revocable": {
+            "type": "boolean",
+            "description": "Whether the token is revocable."
+          },
+          "name": {
+            "type": "string",
+            "description": "Associated name."
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date. ISO8601 format.",
+            "format": "date-time"
+          },
+          "capabilities": {
+            "type": "array",
+            "description": "Array of capabilities granted to this synthetic token.",
+            "items": {
+              "$ref": "#/components/schemas/Capability"
+            }
+          },
+          "host": {
+            "type": "string",
+            "description": "Host subdomain."
+          },
+          "groupId": {
+            "type": "string",
+            "description": "Group ID for related synthetic tokens."
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID. Used to associate events with each other. Events that are part of the same operation will have the same correlation ID."
+          }
+        },
+        "required": [
+          "networkId",
+          "finalized",
+          "blockNumber",
+          "tokenAddress",
+          "tokenId",
+          "type",
+          "registrarIanaId",
+          "owner",
+          "ownership",
+          "revocable",
+          "name",
+          "expiresAt",
+          "capabilities",
+          "host",
+          "groupId"
+        ]
+      },
+      "SyntheticTokenMintedEventType": {
+        "type": "string",
+        "enum": [
+          "SYNTHETIC_TOKEN_MINTED"
+        ],
+        "description": "Blockchain event type."
+      },
+      "Capability": {
+        "type": "string",
+        "enum": [
+          "REGISTRY_RECORDS_MANAGEMENT",
+          "DNS_RECORDS_MANAGEMENT"
+        ],
+        "description": "Array of capabilities granted to this synthetic token."
+      },
+      "NameTokenListedEventResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Marketplace event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenListedEventType"
+              }
+            ]
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "orderbook": {
+            "description": "Orderbook type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderbookType"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "description": "Order ID"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Event creation timestamp",
+            "format": "date-time"
+          },
+          "startsAt": {
+            "type": "string",
+            "description": "Start date of the listing. ISO8601 format.",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date of the listing. ISO8601 format.",
+            "format": "date-time"
+          },
+          "seller": {
+            "type": "string",
+            "description": "Seller address"
+          },
+          "buyer": {
+            "type": "string",
+            "description": "Buyer address if this is a private listing"
+          },
+          "payment": {
+            "description": "Payment information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentInfoResponse"
+              }
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "orderbook",
+          "createdAt",
+          "startsAt",
+          "expiresAt",
+          "seller",
+          "payment"
+        ]
+      },
+      "NameTokenListedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_LISTED"
+        ],
+        "description": "Marketplace event type"
+      },
+      "OrderbookType": {
+        "type": "string",
+        "enum": [
+          "DOMA",
+          "OPENSEA"
+        ],
+        "description": "Orderbook type"
+      },
+      "PaymentInfoResponse": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "string",
+            "description": "Price in the smallest unit of the currency"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "Token address used for payment"
+          },
+          "currencySymbol": {
+            "type": "string",
+            "description": "Currency symbol"
+          }
+        },
+        "required": [
+          "price",
+          "tokenAddress",
+          "currencySymbol"
+        ]
+      },
+      "NameTokenOfferReceivedEventResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Marketplace event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenOfferReceivedEventType"
+              }
+            ]
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "orderbook": {
+            "description": "Orderbook type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderbookType"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "description": "Order ID"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Event creation timestamp",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date of the offer. ISO8601 format.",
+            "format": "date-time"
+          },
+          "buyer": {
+            "type": "string",
+            "description": "Buyer address"
+          },
+          "seller": {
+            "type": "string",
+            "description": "Seller address"
+          },
+          "payment": {
+            "description": "Payment information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentInfoResponse"
+              }
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "orderbook",
+          "createdAt",
+          "expiresAt",
+          "buyer",
+          "seller",
+          "payment"
+        ]
+      },
+      "NameTokenOfferReceivedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_OFFER_RECEIVED"
+        ],
+        "description": "Marketplace event type"
+      },
+      "NameTokenListingCancelledEventResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Marketplace event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenListingCancelledEventType"
+              }
+            ]
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "orderbook": {
+            "description": "Orderbook type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderbookType"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "description": "Order ID"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Event creation timestamp",
+            "format": "date-time"
+          },
+          "seller": {
+            "type": "string",
+            "description": "Address that cancelled the listing"
+          }
+        },
+        "required": [
+          "type",
+          "orderbook",
+          "createdAt",
+          "seller"
+        ]
+      },
+      "NameTokenListingCancelledEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_LISTING_CANCELLED"
+        ],
+        "description": "Marketplace event type"
+      },
+      "NameTokenOfferCancelledEventResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Marketplace event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenOfferCancelledEventType"
+              }
+            ]
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "orderbook": {
+            "description": "Orderbook type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderbookType"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "description": "Order ID"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Event creation timestamp",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "type",
+          "orderbook",
+          "createdAt"
+        ]
+      },
+      "NameTokenOfferCancelledEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_OFFER_CANCELLED"
+        ],
+        "description": "Marketplace event type"
+      },
+      "NameTokenPurchasedEventResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Marketplace event type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NameTokenPurchasedEventType"
+              }
+            ]
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "NFT contract address"
+          },
+          "orderbook": {
+            "description": "Orderbook type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderbookType"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "description": "Order ID"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Event creation timestamp",
+            "format": "date-time"
+          },
+          "orderType": {
+            "description": "Order type (listing vs offer)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderType"
+              }
+            ]
+          },
+          "purchasedAt": {
+            "type": "string",
+            "description": "Purchase date. ISO8601 format.",
+            "format": "date-time"
+          },
+          "seller": {
+            "type": "string",
+            "description": "Seller address"
+          },
+          "buyer": {
+            "type": "string",
+            "description": "Buyer address"
+          },
+          "payment": {
+            "description": "Payment information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentInfoResponse"
+              }
+            ]
+          },
+          "txHash": {
+            "type": "object",
+            "description": "Transaction hash"
+          }
+        },
+        "required": [
+          "type",
+          "orderbook",
+          "createdAt",
+          "orderType",
+          "purchasedAt",
+          "seller",
+          "buyer",
+          "payment"
+        ]
+      },
+      "NameTokenPurchasedEventType": {
+        "type": "string",
+        "enum": [
+          "NAME_TOKEN_PURCHASED"
+        ],
+        "description": "Marketplace event type"
+      },
+      "OrderType": {
+        "type": "string",
+        "enum": [
+          "LISTING",
+          "OFFER"
+        ],
+        "description": "Order type (listing vs offer)"
+      },
+      "CreateOrderRequestBody": {
+        "type": "object",
+        "properties": {
+          "orderbook": {
+            "type": "string",
+            "description": "Orderbook identifier."
+          },
+          "chainId": {
+            "type": "string",
+            "description": "Chain ID in CAIP-2 format.",
+            "pattern": "^[a-z0-9]+:[a-zA-Z0-9]+$"
+          },
+          "parameters": {
+            "description": "Order parameters.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderComponents"
+              }
+            ]
+          },
+          "signature": {
+            "type": "string",
+            "description": "Order signature."
+          },
+          "cancelExisting": {
+            "type": "boolean",
+            "description": "Cancel existing order if it exists."
+          },
+          "cancelSignatures": {
+            "type": "object",
+            "description": "Map of order IDs to cancellation signatures. Required for OpenSea orderbook when canceling existing orders.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "orderbook",
+          "chainId",
+          "parameters",
+          "signature",
+          "cancelExisting"
+        ]
+      },
+      "OrderComponents": {
+        "type": "object",
+        "properties": {
+          "offerer": {
+            "type": "string",
+            "description": "Address of the offerer."
+          },
+          "zone": {
+            "type": "string",
+            "description": "Zone address."
+          },
+          "orderType": {
+            "type": "number",
+            "description": "Type of order.",
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time of the order (Unix timestamp as string)."
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time of the order (Unix timestamp as string)."
+          },
+          "zoneHash": {
+            "type": "string",
+            "description": "Zone hash."
+          },
+          "salt": {
+            "type": "string",
+            "description": "Salt for the order."
+          },
+          "offer": {
+            "description": "Array of offer items.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfferItem"
+            }
+          },
+          "consideration": {
+            "description": "Array of consideration items. Considerations must include following fee items: Doma Marketplace fee, Name Token Royalties, OpenSea Fees (only for OpenSea Orderbook).",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConsiderationItem"
+            }
+          },
+          "totalOriginalConsiderationItems": {
+            "type": "number",
+            "description": "Total number of original consideration items."
+          },
+          "conduitKey": {
+            "type": "string",
+            "description": "Conduit key."
+          },
+          "counter": {
+            "type": "string",
+            "description": "Counter for the order (as string)."
+          }
+        },
+        "required": [
+          "offerer",
+          "zone",
+          "orderType",
+          "startTime",
+          "endTime",
+          "zoneHash",
+          "salt",
+          "offer",
+          "consideration",
+          "totalOriginalConsiderationItems",
+          "conduitKey",
+          "counter"
+        ]
+      },
+      "OfferItem": {
+        "type": "object",
+        "properties": {
+          "itemType": {
+            "type": "number",
+            "description": "The type of item being offered.",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "token": {
+            "type": "string",
+            "description": "Token address of the item being offered."
+          },
+          "identifierOrCriteria": {
+            "type": "string",
+            "description": "Identifier or criteria for the item."
+          },
+          "startAmount": {
+            "type": "string",
+            "description": "Starting amount for the item."
+          },
+          "endAmount": {
+            "type": "string",
+            "description": "Ending amount for the item."
+          }
+        },
+        "required": [
+          "itemType",
+          "token",
+          "identifierOrCriteria",
+          "startAmount",
+          "endAmount"
+        ]
+      },
+      "ConsiderationItem": {
+        "type": "object",
+        "properties": {
+          "itemType": {
+            "type": "number",
+            "description": "The type of item being offered.",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "token": {
+            "type": "string",
+            "description": "Token address of the item being offered."
+          },
+          "identifierOrCriteria": {
+            "type": "string",
+            "description": "Identifier or criteria for the item."
+          },
+          "startAmount": {
+            "type": "string",
+            "description": "Starting amount for the item."
+          },
+          "endAmount": {
+            "type": "string",
+            "description": "Ending amount for the item."
+          },
+          "recipient": {
+            "type": "string",
+            "description": "Recipient address to receive the consideration item."
+          }
+        },
+        "required": [
+          "itemType",
+          "token",
+          "identifierOrCriteria",
+          "startAmount",
+          "endAmount",
+          "recipient"
+        ]
+      },
+      "CreateOrderResponse": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "The unique identifier for the created order."
+          },
+          "orderData": {
+            "description": "Order data.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderComponents"
+              }
+            ]
+          },
+          "signature": {
+            "type": "string",
+            "description": "Order signature."
+          }
+        },
+        "required": [
+          "orderId",
+          "orderData",
+          "signature"
+        ]
+      },
+      "GetOrderbookFeeResponse": {
+        "type": "object",
+        "properties": {
+          "marketplaceFees": {
+            "description": "Array of marketplace fees.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderbookFee"
+            }
+          }
+        },
+        "required": [
+          "marketplaceFees"
+        ]
+      },
+      "OrderbookFee": {
+        "type": "object",
+        "properties": {
+          "recipient": {
+            "type": "string",
+            "description": "Fee recipient address."
+          },
+          "basisPoints": {
+            "type": "number",
+            "description": "Fee amount in basis points (e.g., 250 = 2.5%)."
+          },
+          "feeType": {
+            "type": "string",
+            "description": "Fee type.",
+            "enum": [
+              "DOMA",
+              "OPENSEA",
+              "ROYALTY"
+            ]
+          }
+        },
+        "required": [
+          "recipient",
+          "basisPoints",
+          "feeType"
+        ]
+      },
+      "GetOrderByIdResponse": {
+        "type": "object",
+        "properties": {
+          "order": {
+            "description": "Order containing parameters and signature.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderResponse"
+              }
+            ]
+          },
+          "extraData": {
+            "type": "object",
+            "description": "Extra data for seaport fulfilment."
+          }
+        },
+        "required": [
+          "order"
+        ]
+      },
+      "OrderResponse": {
+        "type": "object",
+        "properties": {
+          "parameters": {
+            "description": "Order parameters.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderComponents"
+              }
+            ]
+          },
+          "signature": {
+            "type": "string",
+            "description": "Order signature."
+          }
+        },
+        "required": [
+          "parameters",
+          "signature"
+        ]
+      },
+      "CancelOrderRequestBody": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "The Order ID to cancel."
+          },
+          "signature": {
+            "type": "string",
+            "description": "EIP-712 signature for cancel authorization."
+          }
+        },
+        "required": [
+          "orderId",
+          "signature"
+        ]
+      },
+      "CancelOrderResponse": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "The cancelled order ID."
+          }
+        },
+        "required": [
+          "orderId"
+        ]
+      },
+      "CurrenciesResponse": {
+        "type": "object",
+        "properties": {
+          "currencies": {
+            "description": "List of supported currency tokens for orderbook operations.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyTokenResponse"
+            }
+          }
+        },
+        "required": [
+          "currencies"
+        ]
+      },
+      "CurrencyTokenResponse": {
+        "type": "object",
+        "properties": {
+          "contractAddress": {
+            "type": "object",
+            "description": "Token contract address."
+          },
+          "name": {
+            "type": "string",
+            "description": "Token name."
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Currency symbol."
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Number of decimal places for the token."
+          },
+          "type": {
+            "type": "string",
+            "description": "Indicates what operations this currency supports.",
+            "enum": [
+              "LISTING_ONLY",
+              "OFFER_ONLY",
+              "ALL"
+            ]
+          },
+          "nativeWrapper": {
+            "type": "boolean",
+            "description": "Indicates if this currency is a wrapper token (e.g., WETH)."
+          },
+          "usdExchangeRate": {
+            "type": "number",
+            "description": "USD exchange rate for the currency."
+          }
+        },
+        "required": [
+          "name",
+          "symbol",
+          "decimals",
+          "type",
+          "nativeWrapper",
+          "usdExchangeRate"
+        ]
+      },
+      "CreateBulkOrderRequestBody": {
+        "type": "object",
+        "properties": {
+          "orderbook": {
+            "type": "string",
+            "description": "Orderbook identifier. Only DOMA is supported.",
+            "enum": [
+              "DOMA",
+              "OPENSEA"
+            ]
+          },
+          "chainId": {
+            "type": "string",
+            "description": "Chain ID in CAIP-2 format.",
+            "pattern": "^[a-z0-9]+:[a-zA-Z0-9]+$"
+          },
+          "orders": {
+            "description": "Array of orders to create. Maximum 50 orders allowed.",
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkListingOrder"
+            }
+          },
+          "cancelExisting": {
+            "type": "boolean",
+            "description": "Cancel existing orders if they exist."
+          },
+          "cancelSignatures": {
+            "type": "object",
+            "description": "Map of order IDs to cancellation signatures. Required for OpenSea orderbook when canceling existing orders.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "orderbook",
+          "chainId",
+          "orders",
+          "cancelExisting"
+        ]
+      },
+      "BulkListingOrder": {
+        "type": "object",
+        "properties": {
+          "parameters": {
+            "description": "Order parameters.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderComponents"
+              }
+            ]
+          },
+          "signature": {
+            "type": "string",
+            "description": "Order signature."
+          }
+        },
+        "required": [
+          "parameters",
+          "signature"
+        ]
+      },
+      "CreateBulkOrderResponse": {
+        "type": "object",
+        "properties": {
+          "orders": {
+            "description": "Array of created listing responses.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateOrderResponse"
+            }
+          },
+          "errors": {
+            "description": "Array of error messages.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkOrderError"
+            }
+          }
+        },
+        "required": [
+          "orders",
+          "errors"
+        ]
+      },
+      "BulkOrderError": {
+        "type": "object",
+        "properties": {
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID of name that failed"
+          },
+          "contract": {
+            "type": "string",
+            "description": "Contract address of name that failed"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          }
+        },
+        "required": [
+          "tokenId",
+          "contract",
+          "error"
+        ]
+      },
+      "PaginatedBulkListingResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Response items",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "totalCount": {
+            "type": "number",
+            "description": "Total number of items"
+          },
+          "pageSize": {
+            "type": "number",
+            "description": "Number of items per page"
+          },
+          "currentPage": {
+            "type": "number",
+            "description": "Current page"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total of pages"
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Has previous page"
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Has next page"
+          }
+        },
+        "required": [
+          "items",
+          "totalCount",
+          "pageSize",
+          "currentPage",
+          "totalPages",
+          "hasPreviousPage",
+          "hasNextPage"
+        ]
+      }
+    }
+  }
+}

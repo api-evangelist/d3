@@ -1,0 +1,30 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/d3-doma-openapi.json
+standards:
+- id: oauth2
+  conforms: false
+  evidence: API uses Api-Key header authentication, not OAuth2.
+- id: openidconnect
+  conforms: false
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use plain HTTP status codes, no application/problem+json.
+- id: caip-2
+  conforms: true
+  evidence: Chain identifiers expressed in CAIP-2 format (eip155:97477 / eip155:97476).
+- id: caip-10
+  conforms: true
+  evidence: Order and address parameters use CAIP-style chain-scoped identifiers.
+- id: eip-712
+  conforms: true
+  evidence: Orderbook signatures use EIP-712 typed structured data (eth_signTypedData_v4).
+- id: seaport
+  conforms: true
+  evidence: Orderbook is Seaport-based (OpenSea / Doma orderbooks), OrderComponents schema.
+- id: erc-721
+  conforms: true
+  evidence: Tokenized domain names are ERC-721 name tokens.
+- id: icann-whois
+  conforms: true
+  evidence: Registration requires ICANN-verified WHOIS contact details (registrantHandle).

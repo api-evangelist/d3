@@ -1,0 +1,13 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
+api: openapi/d3-doma-openapi.json
+rate_limits:
+- scope: per-api-key
+  limit_count: 10
+  window: 1s
+  description: All Doma API requests are limited to 10 requests per second per API key.
+upgrade:
+  available: true
+  contact: https://d3inc.atlassian.net/servicedesk/customer/portal/3
+  notes: Contact Doma Support for higher limits.
