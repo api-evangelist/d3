@@ -102,7 +102,7 @@ common:
 - type: PrivacyPolicy
   url: https://d3.com/privacy
 - type: OpenAPI
-  url: openapi/d3-doma-openapi.json
+  url: openapi/_original/d3-doma-openapi.json
 - type: LLMsTxt
   url: llms/d3-llms.txt
 - type: Packages
