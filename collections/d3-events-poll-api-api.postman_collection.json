@@ -1,0 +1,819 @@
+{
+  "item": [
+    {
+      "id": "63101c55-f65d-483e-83c3-4d366ddc691b",
+      "name": "Events Poll API",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "38a3c9c7-f254-4bf5-afef-5df795e79b33",
+          "name": "Poll for new Doma Protocol events",
+          "request": {
+            "name": "Poll for new Doma Protocol events",
+            "description": {
+              "content": "Returns blockchain events that have occurred since the last acknowledged event.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "poll"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "eventTypes",
+                  "value": "<string>",
+                  "description": "Filter events by type. Can be provided multiple times to filter by multiple types."
+                },
+                {
+                  "disabled": false,
+                  "key": "eventTypes",
+                  "value": "<string>",
+                  "description": "Filter events by type. Can be provided multiple times to filter by multiple types."
+                },
+                {
+                  "disabled": false,
+                  "key": "includeSynthetics",
+                  "value": "false",
+                  "description": "Whether to include synthetic token events."
+                },
+                {
+                  "disabled": false,
+                  "key": "finalizedOnly",
+                  "value": "true",
+                  "description": "Whether to return only finalized events."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cbfbe0e2-e2a3-4413-85c6-e05d023fa1a7",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "includeSynthetics",
+                      "value": "false"
+                    },
+                    {
+                      "key": "finalizedOnly",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"events\": [\n    {\n      \"id\": 8432.755995849791,\n      \"eoi\": true,\n      \"type\": \"NAME_DNS_RR_SET_UPDATE_REQUESTED\",\n      \"eventData\": {\n        \"networkId\": \"string\",\n        \"finalized\": false,\n        \"blockNumber\": \"string\",\n        \"tokenAddress\": \"string\",\n        \"tokenId\": \"string\",\n        \"type\": \"NAME_TOKEN_MINTED\",\n        \"registrarIanaId\": 4791.004048878269,\n        \"owner\": \"string\",\n        \"name\": \"string\",\n        \"expiresAt\": \"1997-08-13T05:25:45.105Z\",\n        \"txHash\": \"string\",\n        \"logIndex\": 8108.406123486333,\n        \"correlationId\": \"string\"\n      },\n      \"name\": \"string\",\n      \"tokenId\": \"string\",\n      \"uniqueId\": \"string\",\n      \"relayId\": \"string\"\n    },\n    {\n      \"id\": 2263.7931644874766,\n      \"eoi\": true,\n      \"type\": \"NAME_DETOKENIZED\",\n      \"eventData\": {\n        \"networkId\": \"string\",\n        \"finalized\": false,\n        \"blockNumber\": \"string\",\n        \"tokenAddress\": \"string\",\n        \"tokenId\": \"string\",\n        \"type\": \"NAME_TOKEN_MINTED\",\n        \"registrarIanaId\": 4283.674334056103,\n        \"owner\": \"string\",\n        \"name\": \"string\",\n        \"expiresAt\": \"2024-05-06T07:30:54.494Z\",\n        \"txHash\": \"string\",\n        \"logIndex\": 6817.335044839464,\n        \"correlationId\": \"string\"\n      },\n      \"name\": \"string\",\n      \"tokenId\": \"string\",\n      \"uniqueId\": \"string\",\n      \"relayId\": \"string\"\n    }\n  ],\n  \"lastId\": 6756.291665153843,\n  \"hasMoreEvents\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "26546f80-5264-4c2f-87fe-b83f09b75e4f",
+              "name": "Bad Request. Invalid query parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "includeSynthetics",
+                      "value": "false"
+                    },
+                    {
+                      "key": "finalizedOnly",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7fbf61d0-395e-425a-8bcc-dd03680b81fb",
+              "name": "Unauthorized. API Key is missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "includeSynthetics",
+                      "value": "false"
+                    },
+                    {
+                      "key": "finalizedOnly",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "58045382-e474-45ae-9c17-88e6cbe3b060",
+              "name": "Forbidden. API Key is missing 'EVENTS' permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "eventTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "includeSynthetics",
+                      "value": "false"
+                    },
+                    {
+                      "key": "finalizedOnly",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b608a1c9-5196-480e-88ec-4db83d1476e6",
+          "name": "Acknowledge received events",
+          "request": {
+            "name": "Acknowledge received events",
+            "description": {
+              "content": "Updates the last acknowledged event id for the client.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "poll",
+                "ack",
+                ":lastEventId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "lastEventId",
+                  "description": "Last event id that was processed by the client."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "939c0bc1-f760-4a54-bbe4-a8fba5f61c90",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "ack",
+                    ":lastEventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "lastEventId",
+                      "description": "Last event id that was processed by the client."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5157d082-8867-4865-b71d-177b6001c4f9",
+              "name": "Bad Request. Invalid event id.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "ack",
+                    ":lastEventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "lastEventId",
+                      "description": "Last event id that was processed by the client."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a2501a6e-5916-44b6-b23e-12ee2a9258ee",
+              "name": "Unauthorized. API Key is missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "ack",
+                    ":lastEventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "lastEventId",
+                      "description": "Last event id that was processed by the client."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c952ff8c-d540-4ab5-98c1-4bc938554b0d",
+              "name": "Forbidden. API Key is missing 'EVENTS' permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "ack",
+                    ":lastEventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "lastEventId",
+                      "description": "Last event id that was processed by the client."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9784888f-cc4f-431b-8007-ac2bf6275259",
+          "name": "Reset last acknowledged event",
+          "request": {
+            "name": "Reset last acknowledged event",
+            "description": {
+              "content": "Updates the last acknowledged event id for the client. Can be used to reset the polling state to re-consume events.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "poll",
+                "reset",
+                ":eventId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "eventId",
+                  "description": "Event id to reset the last acknowledged event id to."
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "27668d61-69b2-4ded-bb41-4329fc05a12c",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "reset",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "eventId",
+                      "description": "Event id to reset the last acknowledged event id to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "087fd5f3-ff77-4f43-be41-3f5b1658ed5e",
+              "name": "Bad Request. Invalid event id.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "reset",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "eventId",
+                      "description": "Event id to reset the last acknowledged event id to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3f5accaa-3912-4e9f-b49e-4cd62c9c285e",
+              "name": "Unauthorized. API Key is missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "reset",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "eventId",
+                      "description": "Event id to reset the last acknowledged event id to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9a17efd6-e550-486b-8edc-8c428879cef0",
+              "name": "Forbidden. API Key is missing 'EVENTS' permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "poll",
+                    "reset",
+                    ":eventId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "eventId",
+                      "description": "Event id to reset the last acknowledged event id to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.doma.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "7361eb07-1b74-4fdf-bbde-ad1cbc46b5dc",
+    "name": "Doma Protocol Events Poll API API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Doma Protocol API (Poll API + Orderbook API) for D3's on-chain domain tokenization protocol. Aggregated by API Evangelist from the per-operation OpenAPI fragments published in the Doma docs (docs.doma.xyz). Authenticate with an Api-Key header; rate limited to 10 req/s.",
+      "type": "text/plain"
+    }
+  }
+}

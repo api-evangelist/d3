@@ -1,0 +1,247 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Doma Protocol Events Poll API Orderbook API API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orderbook API",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Listing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/orderbook/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a fixed priced listing on a supported orderbook (OpenSea, Doma)."
+        },
+        {
+          "info": {
+            "name": "Create Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/orderbook/offer",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an offer on a supported orderbook (OpenSea, Doma)."
+        },
+        {
+          "info": {
+            "name": "Get orderbook fees",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.doma.xyz/v1/orderbook/fee/:orderbook/:chainId/:contractAddress",
+            "params": [
+              {
+                "name": "orderbook",
+                "value": "",
+                "type": "path",
+                "description": "The orderbook type"
+              },
+              {
+                "name": "chainId",
+                "value": "",
+                "type": "path",
+                "description": "The chain ID in CAIP-2 format"
+              },
+              {
+                "name": "contractAddress",
+                "value": "",
+                "type": "path",
+                "description": "The contract address of the token being listed or offered."
+              }
+            ]
+          },
+          "docs": "Get marketplace fees for a specific orderbook and chain."
+        },
+        {
+          "info": {
+            "name": "Get Listing fulfillment data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.doma.xyz/v1/orderbook/listing/:orderId/:buyer",
+            "params": [
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "path",
+                "description": "The Order ID of the listing."
+              },
+              {
+                "name": "buyer",
+                "value": "",
+                "type": "path",
+                "description": "Buyer address, in native chain format."
+              }
+            ]
+          },
+          "docs": "Get listing fulfillment data by order id and buyer address."
+        },
+        {
+          "info": {
+            "name": "Get Offer fulfillment data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.doma.xyz/v1/orderbook/offer/:orderId/:fulfiller",
+            "params": [
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "path",
+                "description": "The Order ID of the offer."
+              },
+              {
+                "name": "fulfiller",
+                "value": "",
+                "type": "path",
+                "description": "Fulfiller address, in native chain format. This is the address that owns the name token."
+              }
+            ]
+          },
+          "docs": "Get offer fulfillment data by order id and fulfiller (token owner) address."
+        },
+        {
+          "info": {
+            "name": "Cancel Listing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/orderbook/listing/cancel",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancel a listing on a supported orderbook (OpenSea, Doma)."
+        },
+        {
+          "info": {
+            "name": "Cancel Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/orderbook/offer/cancel",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancel an offer on a supported orderbook (OpenSea, Doma)."
+        },
+        {
+          "info": {
+            "name": "Get supported currencies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.doma.xyz/v1/orderbook/currencies/:chainId/:contractAddress/:orderbook",
+            "params": [
+              {
+                "name": "chainId",
+                "value": "",
+                "type": "path",
+                "description": "The chain ID in CAIP-2 format"
+              },
+              {
+                "name": "contractAddress",
+                "value": "",
+                "type": "path",
+                "description": "The contract address of the token."
+              },
+              {
+                "name": "orderbook",
+                "value": "",
+                "type": "path",
+                "description": "The name of the orderbook."
+              }
+            ]
+          },
+          "docs": "Get all supported currency tokens for orderbook operations on a specific chain."
+        },
+        {
+          "info": {
+            "name": "Create Bulk Listings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/orderbook/list/bulk",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create multiple fixed priced listings on a supported orderbook (Doma and OpenSea)."
+        },
+        {
+          "info": {
+            "name": "Create Bulk Offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/orderbook/offer/bulk",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create multiple fixed priced offers on a supported orderbook (Doma and OpenSea)."
+        },
+        {
+          "info": {
+            "name": "Get bulk listing items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.doma.xyz/v1/orderbook/list/bulk/:id/items",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Bulk listing ID"
+              }
+            ]
+          },
+          "docs": "Get paginated items for a bulk listing by bulk listing ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,119 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Doma Protocol Events Poll API API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Events Poll API",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Poll for new Doma Protocol events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.doma.xyz/v1/poll",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor identifier to use for tracking the polling state. Can be used to manage multiple independent polling states."
+              },
+              {
+                "name": "eventTypes",
+                "value": "",
+                "type": "query",
+                "description": "Filter events by type. Can be provided multiple times to filter by multiple types."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of events to return in a single response page."
+              },
+              {
+                "name": "includeSynthetics",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include synthetic token events."
+              },
+              {
+                "name": "finalizedOnly",
+                "value": "",
+                "type": "query",
+                "description": "Whether to return only finalized events."
+              }
+            ]
+          },
+          "docs": "Returns blockchain events that have occurred since the last acknowledged event."
+        },
+        {
+          "info": {
+            "name": "Acknowledge received events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/poll/ack/:lastEventId",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor identifier to use for tracking the polling state. Can be used to manage multiple independent polling states."
+              },
+              {
+                "name": "lastEventId",
+                "value": "",
+                "type": "path",
+                "description": "Last event id that was processed by the client."
+              }
+            ]
+          },
+          "docs": "Updates the last acknowledged event id for the client."
+        },
+        {
+          "info": {
+            "name": "Reset last acknowledged event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.doma.xyz/v1/poll/reset/:eventId",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor identifier to use for tracking the polling state. Can be used to manage multiple independent polling states."
+              },
+              {
+                "name": "eventId",
+                "value": "",
+                "type": "path",
+                "description": "Event id to reset the last acknowledged event id to."
+              }
+            ]
+          },
+          "docs": "Updates the last acknowledged event id for the client. Can be used to reset the polling state to re-consume events."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -51,3 +51,9 @@ tools:
 - name: OrderbookApiController_getBulkListingItems
   description: Get bulk listing items
   source_operation: openapi/d3-doma-openapi.json#OrderbookApiController_getBulkListingItems
+deployment:
+  mode: none
+  verified: derived
+  tools: 14
+  checked: '2026-08-12'
+  source: catalog MCP census
