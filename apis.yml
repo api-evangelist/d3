@@ -1,13 +1,11 @@
 aid: d3
 name: D3
-description: >-
-  D3 is a crypto-infrastructure company building the internet's domain layer,
-  tokenized. Through its Doma Protocol, D3 brings ICANN domain names on-chain as
-  tokenized name assets and unlocks "DomainFi" — programmable DNS, fractionalized
-  domain tokens, an on-chain marketplace, and agentic commerce. Developers use the
-  Doma API (a GraphQL subgraph plus REST Poll and Orderbook APIs), the doma CLI,
-  and portable Agent Skills to register, tokenize, trade, and manage domains across
-  the Doma mainnet (chain 97477) and testnet (97476). D3 is backed by Paradigm.
+description: D3 is a crypto-infrastructure company building the internet's domain layer, tokenized. Through
+  its Doma Protocol, D3 brings ICANN domain names on-chain as tokenized name assets and unlocks "DomainFi"
+  — programmable DNS, fractionalized domain tokens, an on-chain marketplace, and agentic commerce. Developers
+  use the Doma API (a GraphQL subgraph plus REST Poll and Orderbook APIs), the doma CLI, and portable
+  Agent Skills to register, tokenize, trade, and manage domains across the Doma mainnet (chain 97477)
+  and testnet (97476). D3 is backed by Paradigm.
 url: https://raw.githubusercontent.com/api-evangelist/d3/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -43,7 +41,7 @@ accessModel:
   method: derived
 specificationVersion: '0.23'
 created: '2026-07-17'
-modified: '2026-07-18'
+modified: '2026-09-16'
 image: https://d3.com/favicon-v2.svg
 tags:
 - Company
@@ -58,7 +56,7 @@ tags:
 - Agentic Commerce
 apis:
 - aid: d3:d3-events-poll-api-api
-  name: D3 Events Poll API API
+  name: D3 Events Poll API
   description: The Events Poll API API from D3 — 3 operation(s) for events poll api.
   humanURL: https://docs.doma.xyz/api-reference
   baseURL: https://api.doma.xyz
@@ -72,7 +70,7 @@ apis:
   - type: Authentication
     url: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
 - aid: d3:d3-orderbook-api-api
-  name: D3 Orderbook API API
+  name: D3 Orderbook API
   description: The Orderbook API API from D3 — 11 operation(s) for orderbook api.
   humanURL: https://docs.doma.xyz/api-reference
   baseURL: https://api.doma.xyz
@@ -127,7 +125,10 @@ common:
   url: cli/d3-cli.yml
 - type: X-MCPServerCandidate
   url: mcp/d3-mcp.yml
-  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate
+    — a tool list derived from the published API contracts, not an existing server. The scorer already
+    read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type
+    surfaces with a server that does not exist.'
 - type: AgentSkill
   url: skills/_index.yml
 - type: Conventions
