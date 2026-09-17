@@ -69,16 +69,16 @@ apis:
     url: https://docs.doma.xyz/api-reference
   - type: Authentication
     url: https://docs.doma.xyz/api-reference/authentication-and-rate-limits
-- aid: d3:d3-orderbook-api-api
-  name: D3 Orderbook API
-  description: The Orderbook API API from D3 — 11 operation(s) for orderbook api.
+- aid: d3:d3-order-book-api-api
+  name: D3 Order book API
+  description: The Order book API API from D3 — 11 operation(s) for order book api.
   humanURL: https://docs.doma.xyz/api-reference
   baseURL: https://api.doma.xyz
   tags:
-  - Orderbook API
+  - Order book API
   properties:
   - type: OpenAPI
-    url: openapi/d3-orderbook-api-api-openapi.yml
+    url: openapi/d3-order-book-api-api-openapi.yml
   - type: Documentation
     url: https://docs.doma.xyz/api-reference
   - type: Authentication
