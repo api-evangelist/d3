@@ -1,16 +1,27 @@
 {
   "provider": "d3",
   "sources": [
-    "d3-events-poll-api-api-openapi.yml",
-    "d3-orderbook-api-api-openapi.yml"
+    "_original/d3-doma-openapi.json"
   ],
   "outputs": [
     "d3-events-poll-api-api-openapi.yml",
     "d3-orderbook-api-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "d3-doma-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "d3-doma-openapi.json: declared missing tag: Events Poll API",
+    "d3-doma-openapi.json: declared missing tag: Orderbook API",
+    "superseded outputs removed: d3-order-book-api-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 2 total)"
+  ],
+  "skipped": [
+    "d3-events-poll-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "d3-order-book-api-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
