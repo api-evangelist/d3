@@ -346,23 +346,6 @@ paths:
       - Order book API
 components:
   schemas:
-    CreateOrderResponse:
-      type: object
-      properties:
-        orderId:
-          type: string
-          description: The unique identifier for the created order.
-        orderData:
-          description: Order data.
-          allOf:
-          - $ref: '#/components/schemas/OrderComponents'
-        signature:
-          type: string
-          description: Order signature.
-      required:
-      - orderId
-      - orderData
-      - signature
     CreateBulkOrderRequestBody:
       type: object
       properties:
@@ -395,126 +378,6 @@ components:
       - chainId
       - orders
       - cancelExisting
-    CancelOrderResponse:
-      type: object
-      properties:
-        orderId:
-          type: string
-          description: The cancelled order ID.
-      required:
-      - orderId
-    CurrencyTokenResponse:
-      type: object
-      properties:
-        contractAddress:
-          type: object
-          description: Token contract address.
-        name:
-          type: string
-          description: Token name.
-        symbol:
-          type: string
-          description: Currency symbol.
-        decimals:
-          type: number
-          description: Number of decimal places for the token.
-        type:
-          type: string
-          description: Indicates what operations this currency supports.
-          enum:
-          - LISTING_ONLY
-          - OFFER_ONLY
-          - ALL
-        nativeWrapper:
-          type: boolean
-          description: Indicates if this currency is a wrapper token (e.g., WETH).
-        usdExchangeRate:
-          type: number
-          description: USD exchange rate for the currency.
-      required:
-      - name
-      - symbol
-      - decimals
-      - type
-      - nativeWrapper
-      - usdExchangeRate
-    BulkListingOrder:
-      type: object
-      properties:
-        parameters:
-          description: Order parameters.
-          allOf:
-          - $ref: '#/components/schemas/OrderComponents'
-        signature:
-          type: string
-          description: Order signature.
-      required:
-      - parameters
-      - signature
-    OfferItem:
-      type: object
-      properties:
-        itemType:
-          type: number
-          description: The type of item being offered.
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        token:
-          type: string
-          description: Token address of the item being offered.
-        identifierOrCriteria:
-          type: string
-          description: Identifier or criteria for the item.
-        startAmount:
-          type: string
-          description: Starting amount for the item.
-        endAmount:
-          type: string
-          description: Ending amount for the item.
-      required:
-      - itemType
-      - token
-      - identifierOrCriteria
-      - startAmount
-      - endAmount
-    OrderResponse:
-      type: object
-      properties:
-        parameters:
-          description: Order parameters.
-          allOf:
-          - $ref: '#/components/schemas/OrderComponents'
-        signature:
-          type: string
-          description: Order signature.
-      required:
-      - parameters
-      - signature
-    OrderbookFee:
-      type: object
-      properties:
-        recipient:
-          type: string
-          description: Fee recipient address.
-        basisPoints:
-          type: number
-          description: Fee amount in basis points (e.g., 250 = 2.5%).
-        feeType:
-          type: string
-          description: Fee type.
-          enum:
-          - DOMA
-          - OPENSEA
-          - ROYALTY
-      required:
-      - recipient
-      - basisPoints
-      - feeType
     OrderComponents:
       type: object
       properties:
@@ -576,22 +439,28 @@ components:
       - totalOriginalConsiderationItems
       - conduitKey
       - counter
-    BulkOrderError:
+    GetOrderByIdResponse:
       type: object
       properties:
-        tokenId:
-          type: string
-          description: Token ID of name that failed
-        contract:
-          type: string
-          description: Contract address of name that failed
-        error:
-          type: string
-          description: Error message
+        order:
+          description: Order containing parameters and signature.
+          allOf:
+          - $ref: '#/components/schemas/OrderResponse'
+        extraData:
+          type: object
+          description: Extra data for seaport fulfilment.
       required:
-      - tokenId
-      - contract
-      - error
+      - order
+    CurrenciesResponse:
+      type: object
+      properties:
+        currencies:
+          description: List of supported currency tokens for orderbook operations.
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyTokenResponse'
+      required:
+      - currencies
     CreateOrderRequestBody:
       type: object
       properties:
@@ -623,34 +492,64 @@ components:
       - parameters
       - signature
       - cancelExisting
-    CancelOrderRequestBody:
+    BulkListingOrder:
       type: object
       properties:
-        orderId:
-          type: string
-          description: The Order ID to cancel.
+        parameters:
+          description: Order parameters.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
         signature:
           type: string
-          description: EIP-712 signature for cancel authorization.
+          description: Order signature.
       required:
-      - orderId
+      - parameters
       - signature
-    CreateBulkOrderResponse:
+    GetOrderbookFeeResponse:
       type: object
       properties:
-        orders:
-          description: Array of created listing responses.
+        marketplaceFees:
+          description: Array of marketplace fees.
           type: array
           items:
-            $ref: '#/components/schemas/CreateOrderResponse'
-        errors:
-          description: Array of error messages.
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkOrderError'
+            $ref: '#/components/schemas/OrderbookFee'
       required:
-      - orders
-      - errors
+      - marketplaceFees
+    CurrencyTokenResponse:
+      type: object
+      properties:
+        contractAddress:
+          type: object
+          description: Token contract address.
+        name:
+          type: string
+          description: Token name.
+        symbol:
+          type: string
+          description: Currency symbol.
+        decimals:
+          type: number
+          description: Number of decimal places for the token.
+        type:
+          type: string
+          description: Indicates what operations this currency supports.
+          enum:
+          - LISTING_ONLY
+          - OFFER_ONLY
+          - ALL
+        nativeWrapper:
+          type: boolean
+          description: Indicates if this currency is a wrapper token (e.g., WETH).
+        usdExchangeRate:
+          type: number
+          description: USD exchange rate for the currency.
+      required:
+      - name
+      - symbol
+      - decimals
+      - type
+      - nativeWrapper
+      - usdExchangeRate
     ConsiderationItem:
       type: object
       properties:
@@ -686,6 +585,119 @@ components:
       - startAmount
       - endAmount
       - recipient
+    BulkOrderError:
+      type: object
+      properties:
+        tokenId:
+          type: string
+          description: Token ID of name that failed
+        contract:
+          type: string
+          description: Contract address of name that failed
+        error:
+          type: string
+          description: Error message
+      required:
+      - tokenId
+      - contract
+      - error
+    CancelOrderRequestBody:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The Order ID to cancel.
+        signature:
+          type: string
+          description: EIP-712 signature for cancel authorization.
+      required:
+      - orderId
+      - signature
+    CancelOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The cancelled order ID.
+      required:
+      - orderId
+    OrderResponse:
+      type: object
+      properties:
+        parameters:
+          description: Order parameters.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
+        signature:
+          type: string
+          description: Order signature.
+      required:
+      - parameters
+      - signature
+    CreateOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The unique identifier for the created order.
+        orderData:
+          description: Order data.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
+        signature:
+          type: string
+          description: Order signature.
+      required:
+      - orderId
+      - orderData
+      - signature
+    OfferItem:
+      type: object
+      properties:
+        itemType:
+          type: number
+          description: The type of item being offered.
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        token:
+          type: string
+          description: Token address of the item being offered.
+        identifierOrCriteria:
+          type: string
+          description: Identifier or criteria for the item.
+        startAmount:
+          type: string
+          description: Starting amount for the item.
+        endAmount:
+          type: string
+          description: Ending amount for the item.
+      required:
+      - itemType
+      - token
+      - identifierOrCriteria
+      - startAmount
+      - endAmount
+    CreateBulkOrderResponse:
+      type: object
+      properties:
+        orders:
+          description: Array of created listing responses.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateOrderResponse'
+        errors:
+          description: Array of error messages.
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkOrderError'
+      required:
+      - orders
+      - errors
     PaginatedBulkListingResponse:
       type: object
       properties:
@@ -720,38 +732,26 @@ components:
       - totalPages
       - hasPreviousPage
       - hasNextPage
-    GetOrderByIdResponse:
+    OrderbookFee:
       type: object
       properties:
-        order:
-          description: Order containing parameters and signature.
-          allOf:
-          - $ref: '#/components/schemas/OrderResponse'
-        extraData:
-          type: object
-          description: Extra data for seaport fulfilment.
+        recipient:
+          type: string
+          description: Fee recipient address.
+        basisPoints:
+          type: number
+          description: Fee amount in basis points (e.g., 250 = 2.5%).
+        feeType:
+          type: string
+          description: Fee type.
+          enum:
+          - DOMA
+          - OPENSEA
+          - ROYALTY
       required:
-      - order
-    CurrenciesResponse:
-      type: object
-      properties:
-        currencies:
-          description: List of supported currency tokens for orderbook operations.
-          type: array
-          items:
-            $ref: '#/components/schemas/CurrencyTokenResponse'
-      required:
-      - currencies
-    GetOrderbookFeeResponse:
-      type: object
-      properties:
-        marketplaceFees:
-          description: Array of marketplace fees.
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderbookFee'
-      required:
-      - marketplaceFees
+      - recipient
+      - basisPoints
+      - feeType
   securitySchemes:
     Api-Key:
       type: apiKey
