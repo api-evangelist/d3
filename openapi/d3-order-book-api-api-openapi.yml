@@ -346,29 +346,18 @@ paths:
       - Order book API
 components:
   schemas:
-    GetOrderByIdResponse:
+    BulkListingOrder:
       type: object
       properties:
-        order:
-          description: Order containing parameters and signature.
+        parameters:
+          description: Order parameters.
           allOf:
-          - $ref: '#/components/schemas/OrderResponse'
-        extraData:
-          type: object
-          description: Extra data for seaport fulfilment.
-      required:
-      - order
-    CancelOrderRequestBody:
-      type: object
-      properties:
-        orderId:
-          type: string
-          description: The Order ID to cancel.
+          - $ref: '#/components/schemas/OrderComponents'
         signature:
           type: string
-          description: EIP-712 signature for cancel authorization.
+          description: Order signature.
       required:
-      - orderId
+      - parameters
       - signature
     OrderResponse:
       type: object
@@ -383,6 +372,250 @@ components:
       required:
       - parameters
       - signature
+    CurrencyTokenResponse:
+      type: object
+      properties:
+        contractAddress:
+          type: object
+          description: Token contract address.
+        name:
+          type: string
+          description: Token name.
+        symbol:
+          type: string
+          description: Currency symbol.
+        decimals:
+          type: number
+          description: Number of decimal places for the token.
+        type:
+          type: string
+          description: Indicates what operations this currency supports.
+          enum:
+          - LISTING_ONLY
+          - OFFER_ONLY
+          - ALL
+        nativeWrapper:
+          type: boolean
+          description: Indicates if this currency is a wrapper token (e.g., WETH).
+        usdExchangeRate:
+          type: number
+          description: USD exchange rate for the currency.
+      required:
+      - name
+      - symbol
+      - decimals
+      - type
+      - nativeWrapper
+      - usdExchangeRate
+    GetOrderbookFeeResponse:
+      type: object
+      properties:
+        marketplaceFees:
+          description: Array of marketplace fees.
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderbookFee'
+      required:
+      - marketplaceFees
+    GetOrderByIdResponse:
+      type: object
+      properties:
+        order:
+          description: Order containing parameters and signature.
+          allOf:
+          - $ref: '#/components/schemas/OrderResponse'
+        extraData:
+          type: object
+          description: Extra data for seaport fulfilment.
+      required:
+      - order
+    OfferItem:
+      type: object
+      properties:
+        itemType:
+          type: number
+          description: The type of item being offered.
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        token:
+          type: string
+          description: Token address of the item being offered.
+        identifierOrCriteria:
+          type: string
+          description: Identifier or criteria for the item.
+        startAmount:
+          type: string
+          description: Starting amount for the item.
+        endAmount:
+          type: string
+          description: Ending amount for the item.
+      required:
+      - itemType
+      - token
+      - identifierOrCriteria
+      - startAmount
+      - endAmount
+    CreateOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The unique identifier for the created order.
+        orderData:
+          description: Order data.
+          allOf:
+          - $ref: '#/components/schemas/OrderComponents'
+        signature:
+          type: string
+          description: Order signature.
+      required:
+      - orderId
+      - orderData
+      - signature
+    OrderbookFee:
+      type: object
+      properties:
+        recipient:
+          type: string
+          description: Fee recipient address.
+        basisPoints:
+          type: number
+          description: Fee amount in basis points (e.g., 250 = 2.5%).
+        feeType:
+          type: string
+          description: Fee type.
+          enum:
+          - DOMA
+          - OPENSEA
+          - ROYALTY
+      required:
+      - recipient
+      - basisPoints
+      - feeType
+    CreateBulkOrderRequestBody:
+      type: object
+      properties:
+        orderbook:
+          type: string
+          description: Orderbook identifier. Only DOMA is supported.
+          enum:
+          - DOMA
+          - OPENSEA
+        chainId:
+          type: string
+          description: Chain ID in CAIP-2 format.
+          pattern: ^[a-z0-9]+:[a-zA-Z0-9]+$
+        orders:
+          description: Array of orders to create. Maximum 50 orders allowed.
+          maxItems: 50
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkListingOrder'
+        cancelExisting:
+          type: boolean
+          description: Cancel existing orders if they exist.
+        cancelSignatures:
+          type: object
+          description: Map of order IDs to cancellation signatures. Required for OpenSea orderbook when canceling existing orders.
+          additionalProperties:
+            type: string
+      required:
+      - orderbook
+      - chainId
+      - orders
+      - cancelExisting
+    CancelOrderRequestBody:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The Order ID to cancel.
+        signature:
+          type: string
+          description: EIP-712 signature for cancel authorization.
+      required:
+      - orderId
+      - signature
+    ConsiderationItem:
+      type: object
+      properties:
+        itemType:
+          type: number
+          description: The type of item being offered.
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        token:
+          type: string
+          description: Token address of the item being offered.
+        identifierOrCriteria:
+          type: string
+          description: Identifier or criteria for the item.
+        startAmount:
+          type: string
+          description: Starting amount for the item.
+        endAmount:
+          type: string
+          description: Ending amount for the item.
+        recipient:
+          type: string
+          description: Recipient address to receive the consideration item.
+      required:
+      - itemType
+      - token
+      - identifierOrCriteria
+      - startAmount
+      - endAmount
+      - recipient
+    CancelOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: The cancelled order ID.
+      required:
+      - orderId
+    CreateBulkOrderResponse:
+      type: object
+      properties:
+        orders:
+          description: Array of created listing responses.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateOrderResponse'
+        errors:
+          description: Array of error messages.
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkOrderError'
+      required:
+      - orders
+      - errors
+    BulkOrderError:
+      type: object
+      properties:
+        tokenId:
+          type: string
+          description: Token ID of name that failed
+        contract:
+          type: string
+          description: Contract address of name that failed
+        error:
+          type: string
+          description: Error message
+      required:
+      - tokenId
+      - contract
+      - error
     OrderComponents:
       type: object
       properties:
@@ -444,58 +677,6 @@ components:
       - totalOriginalConsiderationItems
       - conduitKey
       - counter
-    OrderbookFee:
-      type: object
-      properties:
-        recipient:
-          type: string
-          description: Fee recipient address.
-        basisPoints:
-          type: number
-          description: Fee amount in basis points (e.g., 250 = 2.5%).
-        feeType:
-          type: string
-          description: Fee type.
-          enum:
-          - DOMA
-          - OPENSEA
-          - ROYALTY
-      required:
-      - recipient
-      - basisPoints
-      - feeType
-    CreateBulkOrderRequestBody:
-      type: object
-      properties:
-        orderbook:
-          type: string
-          description: Orderbook identifier. Only DOMA is supported.
-          enum:
-          - DOMA
-          - OPENSEA
-        chainId:
-          type: string
-          description: Chain ID in CAIP-2 format.
-          pattern: ^[a-z0-9]+:[a-zA-Z0-9]+$
-        orders:
-          description: Array of orders to create. Maximum 50 orders allowed.
-          maxItems: 50
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkListingOrder'
-        cancelExisting:
-          type: boolean
-          description: Cancel existing orders if they exist.
-        cancelSignatures:
-          type: object
-          description: Map of order IDs to cancellation signatures. Required for OpenSea orderbook when canceling existing orders.
-          additionalProperties:
-            type: string
-      required:
-      - orderbook
-      - chainId
-      - orders
-      - cancelExisting
     PaginatedBulkListingResponse:
       type: object
       properties:
@@ -530,37 +711,6 @@ components:
       - totalPages
       - hasPreviousPage
       - hasNextPage
-    OfferItem:
-      type: object
-      properties:
-        itemType:
-          type: number
-          description: The type of item being offered.
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        token:
-          type: string
-          description: Token address of the item being offered.
-        identifierOrCriteria:
-          type: string
-          description: Identifier or criteria for the item.
-        startAmount:
-          type: string
-          description: Starting amount for the item.
-        endAmount:
-          type: string
-          description: Ending amount for the item.
-      required:
-      - itemType
-      - token
-      - identifierOrCriteria
-      - startAmount
-      - endAmount
     CurrenciesResponse:
       type: object
       properties:
@@ -571,98 +721,6 @@ components:
             $ref: '#/components/schemas/CurrencyTokenResponse'
       required:
       - currencies
-    ConsiderationItem:
-      type: object
-      properties:
-        itemType:
-          type: number
-          description: The type of item being offered.
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        token:
-          type: string
-          description: Token address of the item being offered.
-        identifierOrCriteria:
-          type: string
-          description: Identifier or criteria for the item.
-        startAmount:
-          type: string
-          description: Starting amount for the item.
-        endAmount:
-          type: string
-          description: Ending amount for the item.
-        recipient:
-          type: string
-          description: Recipient address to receive the consideration item.
-      required:
-      - itemType
-      - token
-      - identifierOrCriteria
-      - startAmount
-      - endAmount
-      - recipient
-    CancelOrderResponse:
-      type: object
-      properties:
-        orderId:
-          type: string
-          description: The cancelled order ID.
-      required:
-      - orderId
-    BulkOrderError:
-      type: object
-      properties:
-        tokenId:
-          type: string
-          description: Token ID of name that failed
-        contract:
-          type: string
-          description: Contract address of name that failed
-        error:
-          type: string
-          description: Error message
-      required:
-      - tokenId
-      - contract
-      - error
-    CreateOrderResponse:
-      type: object
-      properties:
-        orderId:
-          type: string
-          description: The unique identifier for the created order.
-        orderData:
-          description: Order data.
-          allOf:
-          - $ref: '#/components/schemas/OrderComponents'
-        signature:
-          type: string
-          description: Order signature.
-      required:
-      - orderId
-      - orderData
-      - signature
-    CreateBulkOrderResponse:
-      type: object
-      properties:
-        orders:
-          description: Array of created listing responses.
-          type: array
-          items:
-            $ref: '#/components/schemas/CreateOrderResponse'
-        errors:
-          description: Array of error messages.
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkOrderError'
-      required:
-      - orders
-      - errors
     CreateOrderRequestBody:
       type: object
       properties:
@@ -694,64 +752,6 @@ components:
       - parameters
       - signature
       - cancelExisting
-    GetOrderbookFeeResponse:
-      type: object
-      properties:
-        marketplaceFees:
-          description: Array of marketplace fees.
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderbookFee'
-      required:
-      - marketplaceFees
-    BulkListingOrder:
-      type: object
-      properties:
-        parameters:
-          description: Order parameters.
-          allOf:
-          - $ref: '#/components/schemas/OrderComponents'
-        signature:
-          type: string
-          description: Order signature.
-      required:
-      - parameters
-      - signature
-    CurrencyTokenResponse:
-      type: object
-      properties:
-        contractAddress:
-          type: object
-          description: Token contract address.
-        name:
-          type: string
-          description: Token name.
-        symbol:
-          type: string
-          description: Currency symbol.
-        decimals:
-          type: number
-          description: Number of decimal places for the token.
-        type:
-          type: string
-          description: Indicates what operations this currency supports.
-          enum:
-          - LISTING_ONLY
-          - OFFER_ONLY
-          - ALL
-        nativeWrapper:
-          type: boolean
-          description: Indicates if this currency is a wrapper token (e.g., WETH).
-        usdExchangeRate:
-          type: number
-          description: USD exchange rate for the currency.
-      required:
-      - name
-      - symbol
-      - decimals
-      - type
-      - nativeWrapper
-      - usdExchangeRate
   securitySchemes:
     Api-Key:
       type: apiKey
